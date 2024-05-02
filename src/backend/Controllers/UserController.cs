@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using backend.Models;
+using OurForum.Backend.Entities;
 
-namespace backend.Controllers;
+namespace OurForum.Backend.Controllers;
 
 public class UserController : Controller
 {
@@ -26,6 +26,6 @@ public class UserController : Controller
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        return StatusCode(500);
     }
 }
