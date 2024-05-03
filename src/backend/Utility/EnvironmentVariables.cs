@@ -2,6 +2,21 @@
 
 public static class EnvironmentVariables
 {
+    public static readonly string JWT_AUDIENCE = GetEnvironmentVariable(
+        nameof(JWT_AUDIENCE),
+        "https://localhost:7026"
+    );
+
+    public static readonly string JWT_ISSUER = GetEnvironmentVariable(
+        nameof(JWT_ISSUER),
+        "https://localhost:7026"
+    );
+
+    public static readonly string JWT_KEY = GetEnvironmentVariable(
+        nameof(JWT_KEY),
+        "developmentKeyValue"
+    );
+
     public static readonly string MYSQL_CONNECTIONSTRING = GetEnvironmentVariable(
         nameof(MYSQL_CONNECTIONSTRING),
         $"Server={MYSQL_SERVER};Port={MYSQL_PORT};Database={MYSQL_DATABASE};user={MYSQL_USER};password={MYSQL_PASSWORD}"
@@ -26,22 +41,24 @@ public static class EnvironmentVariables
 
     public static readonly string MYSQL_USER = GetEnvironmentVariable(nameof(MYSQL_USER), "root");
 
-    public static bool Load(params string[] filePaths)
+    private static readonly string[] separator = ["\n", "\r", ";"];
+
+    public static ServiceResponse Load(params string[] filePaths)
     {
-        try
+        var response = new ServiceResponse();
+        foreach (var filePath in filePaths)
         {
-            foreach (var filePath in filePaths)
+            try
             {
                 var fileContent = File.ReadAllText(filePath);
                 if (fileContent is not null && fileContent.Length > 0)
                 {
                     var entries = fileContent
                         .Normalize()
-                        .Replace("\n", string.Empty)
-                        .Replace("\r", string.Empty)
                         .Replace("\t", string.Empty)
                         .Trim()
-                        .Split(';');
+                        .Split(separator, StringSplitOptions.None);
+
                     foreach (var entry in entries)
                     {
                         var trimmedEntry = entry.Trim();
@@ -51,14 +68,21 @@ public static class EnvironmentVariables
                             Environment.SetEnvironmentVariable(pair[0], pair[1]);
                         }
                     }
+                    Console.WriteLine($"Loaded env vars from {filePath}");
+                    if (response.Errors.Count == 0)
+                    {
+                        response.Success = true;
+                    }
                 }
             }
-            return true;
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Errors.Add(e.Message);
+                continue;
+            }
         }
-        catch (Exception)
-        {
-            return false;
-        }
+        return response;
     }
 
     private static string GetEnvironmentVariable(string key, string defaultValue) =>
