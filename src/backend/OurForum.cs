@@ -11,20 +11,18 @@ class OurForum
     {
         var envLoaded = EnvironmentVariables.Load(".dev.env", ".env");
 
-
         if (envLoaded.Success)
         {
             Console.WriteLine("Successfully loaded all env vars");
-        } 
+        }
         else
         {
             Console.WriteLine("Failed to load all env vars");
-            foreach(var error in envLoaded.Errors)
+            foreach (var error in envLoaded.Errors)
             {
                 Console.WriteLine($"Error: {error}");
             }
         }
-        
 
         var builder = WebApplication.CreateBuilder(args);
 

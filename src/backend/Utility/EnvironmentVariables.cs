@@ -17,6 +17,11 @@ public static class EnvironmentVariables
         "developmentKeyValue"
     );
 
+    public static readonly string JWT_SECRET = GetEnvironmentVariable(
+        nameof(JWT_SECRET),
+        "developmentSecretValue"
+    );
+
     public static readonly string MYSQL_CONNECTIONSTRING = GetEnvironmentVariable(
         nameof(MYSQL_CONNECTIONSTRING),
         $"Server={MYSQL_SERVER};Port={MYSQL_PORT};Database={MYSQL_DATABASE};user={MYSQL_USER};password={MYSQL_PASSWORD}"
