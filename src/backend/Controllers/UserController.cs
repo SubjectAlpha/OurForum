@@ -4,6 +4,8 @@ using OurForum.Backend.Entities;
 
 namespace OurForum.Backend.Controllers;
 
+[ApiController]
+[Route("[controller]")]
 public class UserController : Controller
 {
     private readonly ILogger<UserController> _logger;
@@ -13,19 +15,10 @@ public class UserController : Controller
         _logger = logger;
     }
 
-    public IActionResult Index()
+    [HttpGet]
+    public IActionResult Get()
     {
-        return View();
-    }
-
-    public IActionResult Privacy()
-    {
-        return View();
-    }
-
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return StatusCode(500);
+        Console.WriteLine(HttpContext.Request);
+        return StatusCode(204);
     }
 }
