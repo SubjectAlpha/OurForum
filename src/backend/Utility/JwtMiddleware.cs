@@ -25,7 +25,7 @@ public class JwtMiddleware
 }
 
 /*
- * 
+ *
  * https://www.youtube.com/watch?v=mgeuh8k3I4g 10 mins to replace this and do claim attributes on controllers
- * 
+ *
  */

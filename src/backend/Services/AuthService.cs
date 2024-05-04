@@ -12,11 +12,9 @@ namespace OurForum.Backend.Services
 
         public static string Authenticate(string email, string password)
         {
-            using var dbContext = new DatabaseContext();
-            var user = dbContext.Users.FirstOrDefault(x => x.Email == email);
-            var hashedPassword = HashMan.HashString(password);
+            var user = IUserService.Get(email);
 
-            if (user is not null && HashMan.Verify(password, user.EncryptedPassword))
+            if (user is not null && HashMan.Verify(password, user.HashedPassword))
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.Unicode.GetBytes(EnvironmentVariables.JWT_SECRET);
@@ -67,18 +65,22 @@ namespace OurForum.Backend.Services
             var key = Encoding.ASCII.GetBytes(EnvironmentVariables.JWT_SECRET);
             try
             {
-                tokenHandler.ValidateToken(token, new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
-                    ClockSkew = TimeSpan.Zero
-                }, out SecurityToken validatedToken);
+                tokenHandler.ValidateToken(
+                    token,
+                    new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
+                        ClockSkew = TimeSpan.Zero
+                    },
+                    out SecurityToken validatedToken
+                );
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                if(string.IsNullOrEmpty(jwtToken.Claims.First(x => x.Type == "UserId").Value))
+                if (string.IsNullOrEmpty(jwtToken.Claims.First(x => x.Type == "UserId").Value))
                 {
                     return false;
                 }

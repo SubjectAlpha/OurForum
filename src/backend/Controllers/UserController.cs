@@ -31,11 +31,27 @@ public class UserController : Controller
     public IActionResult Authenticate([FromBody] TokenGenerationRequest body)
     {
         var token = AuthService.Authenticate(body.Email, body.Password);
-        if(!string.IsNullOrEmpty(token)) {
+        if (!string.IsNullOrEmpty(token))
+        {
             return Ok(token);
         }
-        
+
         return Unauthorized();
+    }
+
+    [HttpPost("register")]
+    [AllowAnonymous]
+    public IActionResult Register([FromBody] TokenGenerationRequest body)
+    {
+        if (string.IsNullOrWhiteSpace(body.Email) || string.IsNullOrWhiteSpace(body.Password))
+        {
+            return BadRequest("Username and password cannot be blank");
+        }
+
+        // validate email and password further here
+
+        IUserService.Create(body.Email, body.Password);
+        return Authenticate(body);
     }
 
     public struct TokenGenerationRequest
