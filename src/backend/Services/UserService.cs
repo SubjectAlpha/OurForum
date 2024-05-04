@@ -1,3 +1,4 @@
 ﻿namespace OurForum.Backend.Services;
 
-public class UserService { }
+public interface IUserService { }
+public class UserService : IUserService { }
