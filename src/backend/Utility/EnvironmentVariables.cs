@@ -22,11 +22,6 @@ public static class EnvironmentVariables
         "developmentSecretValue"
     );
 
-    public static readonly string MYSQL_CONNECTIONSTRING = GetEnvironmentVariable(
-        nameof(MYSQL_CONNECTIONSTRING),
-        $"Server={MYSQL_SERVER};Port={MYSQL_PORT};Database={MYSQL_DATABASE};user={MYSQL_USER};password={MYSQL_PASSWORD}"
-    );
-
     public static readonly string MYSQL_DATABASE = GetEnvironmentVariable(
         nameof(MYSQL_DATABASE),
         "OurForum"
@@ -45,6 +40,11 @@ public static class EnvironmentVariables
     );
 
     public static readonly string MYSQL_USER = GetEnvironmentVariable(nameof(MYSQL_USER), "root");
+
+    public static readonly string MYSQL_CONNECTIONSTRING = GetEnvironmentVariable(
+        nameof(MYSQL_CONNECTIONSTRING),
+        $"Server={MYSQL_SERVER};Port={MYSQL_PORT};Database={MYSQL_DATABASE};user={MYSQL_USER};password={MYSQL_PASSWORD}"
+    );
 
     private static readonly string[] separator = ["\n", "\r", ";"];
 

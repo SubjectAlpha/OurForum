@@ -18,16 +18,21 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<Board>(e =>
         {
             e.HasKey(x => x.Id);
+            e.Property(x => x.Name).IsRequired();
         });
 
         modelBuilder.Entity<Post>(e =>
         {
             e.HasKey(x => x.Id);
+            e.HasOne(x => x.Board).WithMany(x => x.Posts);
         });
 
         modelBuilder.Entity<Role>(e =>
         {
             e.HasKey(x => x.Id);
+            e.Property(x => x.Name).IsRequired();
+            e.Property(x => x.PowerLevel).IsRequired();
+            e.Property(x => x.Claims).IsRequired();
         });
 
         modelBuilder.Entity<User>(e =>
