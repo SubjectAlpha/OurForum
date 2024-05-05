@@ -40,7 +40,7 @@ public class DatabaseContext : DbContext
             e.HasKey(x => x.Id);
             e.Property(x => x.Alias).IsRequired();
             e.Property(x => x.Email).IsRequired();
-            e.Property(x => x.EncryptedPassword).IsRequired();
+            e.Property(x => x.HashedPassword).IsRequired();
             e.HasOne(x => x.Role).WithMany(x => x.Users);
         });
     }
