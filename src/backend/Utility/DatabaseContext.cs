@@ -32,7 +32,7 @@ public class DatabaseContext : DbContext
             e.HasKey(x => x.Id);
             e.Property(x => x.Name).IsRequired();
             e.Property(x => x.PowerLevel).IsRequired();
-            e.Property(x => x.Claims).IsRequired();
+            e.Property(x => x.Permissions).IsRequired();
         });
 
         modelBuilder.Entity<User>(e =>

@@ -5,6 +5,7 @@ using backend.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OurForum.Backend.Entities;
+using OurForum.Backend.Identity;
 using OurForum.Backend.Services;
 using OurForum.Backend.Utility;
 
@@ -22,8 +23,9 @@ public class UserController : Controller
         _logger = logger;
     }
 
-    [HttpGet]
-    public IActionResult Get()
+    [HttpGet("{id}")]
+    [RequiresPermission(Permissions.READ_PROFILE)]
+    public IActionResult Get(string id)
     {
         Console.WriteLine(HttpContext.Request);
         return StatusCode(204);
@@ -34,7 +36,10 @@ public class UserController : Controller
     public IActionResult Authenticate([FromBody] LoginRequest body)
     {
         var validationResult = LoginRequestValidation(body);
-        if (!validationResult.Success) { return BadRequest("Email/Password validation failed"); }
+        if (!validationResult.Success)
+        {
+            return BadRequest("Email/Password validation failed");
+        }
 
         var token = AuthService.Authenticate(body.Email, body.Password);
         if (!string.IsNullOrEmpty(token))

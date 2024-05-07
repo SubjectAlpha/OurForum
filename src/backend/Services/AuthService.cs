@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using OurForum.Backend.Identity;
 using OurForum.Backend.Utility;
 
 namespace OurForum.Backend.Services
@@ -12,7 +13,7 @@ namespace OurForum.Backend.Services
 
         public static string Authenticate(string email, string password)
         {
-            var user = IUserService.Get(email);
+            var user = IUserService.GetByEmail(email);
 
             if (user is not null && HashMan.Verify(password, user.HashedPassword))
             {
@@ -24,10 +25,11 @@ namespace OurForum.Backend.Services
                     new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new(JwtRegisteredClaimNames.Sub, user.Email),
                     new(JwtRegisteredClaimNames.Email, user.Email),
-                    new("UserId", user.Id.ToString()),
+                    new(CustomClaims.USER_ID, user.Id.ToString()),
+                    new(CustomClaims.ROLE_ID, user.Role?.Id.ToString() ?? string.Empty),
                 };
 
-                foreach (var claim in user.Role.Claims.Split(";"))
+                foreach (var claim in user.Role?.Permissions.Split(";") ?? [])
                 {
                     claims.Add(new Claim(claim, claim));
                 }

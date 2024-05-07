@@ -54,7 +54,7 @@ class OurForum
         builder.Services.AddAntiforgery();
 
         var app = builder.Build();
-
+        
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
         {
@@ -63,9 +63,9 @@ class OurForum
         }
 
         app.UseHttpsRedirection();
+        app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();
-        app.UseRouting();
         app.UseAntiforgery();
 
         app.MapControllerRoute(name: "default", pattern: "{controller=User}/{action=Get}/{id?}");
