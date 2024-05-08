@@ -64,7 +64,7 @@ public class UserController : Controller
             return BadRequest("Email/Password validation failed");
         }
 
-        var newUser = IUserService.Create(body.Email, body.Password);
+        var newUser = IUserService.Create(body.Alias, body.Email, body.Password);
 
         if (newUser != null)
         {
@@ -106,6 +106,9 @@ public class UserController : Controller
 
     public class RegistrationRequest : LoginRequest
     {
+        [JsonPropertyName("alias")]
+        public string Alias { get; set; } = string.Empty;
+
         [JsonPropertyName("confirmPassword")]
         public string ConfirmPassword { get; set; } = string.Empty;
     }

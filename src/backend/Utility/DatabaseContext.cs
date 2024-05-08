@@ -30,6 +30,7 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<Role>(e =>
         {
             e.HasKey(x => x.Id);
+            e.HasIndex(x => x.Name).IsUnique();
             e.Property(x => x.Name).IsRequired();
             e.Property(x => x.PowerLevel).IsRequired();
             e.Property(x => x.Permissions).IsRequired();
@@ -38,6 +39,7 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<User>(e =>
         {
             e.HasKey(x => x.Id);
+            e.HasIndex(x => x.Email).IsUnique();
             e.Property(x => x.Alias).IsRequired();
             e.Property(x => x.Email).IsRequired();
             e.Property(x => x.HashedPassword).IsRequired();

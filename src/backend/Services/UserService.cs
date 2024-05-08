@@ -5,14 +5,20 @@ namespace OurForum.Backend.Services;
 
 public interface IUserService
 {
-    static User? Create(string email, string hashedPassword)
+    static User? Create(string alias, string email, string hashedPassword, Guid? roleId = null)
     {
         using var dbContext = new DatabaseContext();
         dbContext.Database.EnsureCreated();
-        var user = new User { Email = email, HashedPassword = hashedPassword };
+        var user = new User
+        {
+            Alias = alias,
+            Email = email,
+            HashedPassword = hashedPassword,
+            RoleId = roleId
+        };
         dbContext.Users.Add(user);
         dbContext.SaveChanges();
-        return user;
+        return dbContext.Users.FirstOrDefault(x => x.Email == email);
     }
 
     static User? Get(Guid id)

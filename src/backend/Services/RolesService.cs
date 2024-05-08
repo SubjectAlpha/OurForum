@@ -11,16 +11,14 @@ namespace OurForum.Backend.Services
             return dbContext.Roles.FirstOrDefault(x => x.Id == roleId)?.Permissions.Split(";");
         }
 
-        static ServiceResponse Create(string name, string permissions)
+        static Role? Create(string name, string permissions)
         {
-            var response = new ServiceResponse();
             using var dbContext = new DatabaseContext();
             dbContext.Database.EnsureCreated();
             var r = new Role { Name = name, Permissions = permissions };
             dbContext.Roles.Add(r);
             dbContext.SaveChanges();
-            response.Success = true;
-            return response;
+            return dbContext.Roles.FirstOrDefault(x => x.Name == r.Name);
         }
     }
 
