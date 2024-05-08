@@ -22,28 +22,33 @@ public static class EnvironmentVariables
         "developmentSecretValue"
     );
 
-    public static readonly string MYSQL_DATABASE = GetEnvironmentVariable(
-        nameof(MYSQL_DATABASE),
+    public static readonly string SQL_DATABASE = GetEnvironmentVariable(
+        nameof(SQL_DATABASE),
         "OurForum"
     );
 
-    public static readonly string MYSQL_PASSWORD = GetEnvironmentVariable(
-        nameof(MYSQL_PASSWORD),
-        "developmentServerPassword"
+    public static readonly string SQL_PASSWORD = GetEnvironmentVariable(
+        nameof(SQL_PASSWORD),
+        "str0ngDevelopmentPassw0rd!"
     );
 
-    public static readonly string MYSQL_PORT = GetEnvironmentVariable(nameof(MYSQL_PORT), "3306");
+    public static readonly string SQL_PORT = GetEnvironmentVariable(nameof(SQL_PORT), "1433");
 
-    public static readonly string MYSQL_SERVER = GetEnvironmentVariable(
-        nameof(MYSQL_SERVER),
+    public static readonly string SQL_SERVER = GetEnvironmentVariable(
+        nameof(SQL_SERVER),
         "localhost"
     );
 
-    public static readonly string MYSQL_USER = GetEnvironmentVariable(nameof(MYSQL_USER), "root");
+    public static readonly string SQL_USER = GetEnvironmentVariable(nameof(SQL_USER), "sa");
 
-    public static readonly string MYSQL_CONNECTIONSTRING = GetEnvironmentVariable(
-        nameof(MYSQL_CONNECTIONSTRING),
-        $"Server={MYSQL_SERVER};Port={MYSQL_PORT};Database={MYSQL_DATABASE};user={MYSQL_USER};password={MYSQL_PASSWORD}"
+    private static readonly string SQL_TRUST_CONNECTION = GetEnvironmentVariable(
+        nameof(SQL_TRUST_CONNECTION),
+        "False"
+    );
+
+    public static readonly string SQL_CONNECTIONSTRING = GetEnvironmentVariable(
+        nameof(SQL_CONNECTIONSTRING),
+        $"Server={SQL_SERVER},{SQL_PORT};Database={SQL_DATABASE};User Id={SQL_USER};Password={SQL_PASSWORD};Trusted_Connection={SQL_TRUST_CONNECTION};TrustServerCertificate=True"
     );
 
     private static readonly string[] separator = ["\n", "\r", ";"];

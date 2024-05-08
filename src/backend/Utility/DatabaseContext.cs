@@ -9,7 +9,7 @@ public class DatabaseContext : DbContext
     public DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
-        optionsBuilder.UseMySQL(EnvironmentVariables.MYSQL_CONNECTIONSTRING);
+        optionsBuilder.UseSqlServer(EnvironmentVariables.SQL_CONNECTIONSTRING);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

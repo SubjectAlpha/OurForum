@@ -8,6 +8,7 @@ public class User : Base
     public string Email { get; set; } = string.Empty;
     public string HashedPassword { get; set; } = string.Empty;
     public Guid? RoleId { get; set; }
+
     [ForeignKey(nameof(RoleId))]
     public virtual Role? Role { get; set; } = new();
 }
