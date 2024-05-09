@@ -28,12 +28,21 @@ public class AppController : Controller
                     permissions += $"{p.Name};";
                 });
 
-            var createAdminRoleResponse = IRolesService.Create("SystemAdmin", permissions);
+            var createUserRoleResponse = IRolesService.Create(
+                SystemRoles.USER,
+                $"{Permissions.READ_PROFILE};{Permissions.CREATE_POST}",
+                SystemRoles.USER_POWERLEVEL
+            );
+            var createAdminRoleResponse = IRolesService.Create(
+                SystemRoles.ADMIN,
+                permissions,
+                SystemRoles.ADMIN_POWERLEVEL
+            );
             var createAdminAccountResponse = IUserService.Create(
                 initData.Username,
                 initData.Email,
                 HashMan.HashString(initData.Password),
-                createAdminRoleResponse!.Id
+                createAdminRoleResponse!
             );
 
             return Ok(createAdminRoleResponse);

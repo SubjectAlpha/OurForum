@@ -64,7 +64,8 @@ public class UserController : Controller
             return BadRequest("Email/Password validation failed");
         }
 
-        var newUser = IUserService.Create(body.Alias, body.Email, body.Password);
+        var role = IRolesService.Get(SystemRoles.USER);
+        var newUser = IUserService.Create(body.Alias, body.Email, body.Password, role!);
 
         if (newUser != null)
         {

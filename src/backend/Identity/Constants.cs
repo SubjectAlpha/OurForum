@@ -14,3 +14,12 @@ public struct CustomClaims
     public const string USER_ID = "UserId",
         ROLE_ID = "RoleId";
 }
+
+public struct SystemRoles
+{
+    public const string USER = "user",
+        ADMIN = "systemadmin";
+
+    public const int USER_POWERLEVEL = 50,
+        ADMIN_POWERLEVEL = 9000;
+}

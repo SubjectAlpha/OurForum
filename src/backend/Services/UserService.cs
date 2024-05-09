@@ -5,7 +5,7 @@ namespace OurForum.Backend.Services;
 
 public interface IUserService
 {
-    static User? Create(string alias, string email, string hashedPassword, Guid? roleId = null)
+    static User? Create(string alias, string email, string hashedPassword, Role role)
     {
         using var dbContext = new DatabaseContext();
         dbContext.Database.EnsureCreated();
@@ -14,7 +14,7 @@ public interface IUserService
             Alias = alias,
             Email = email,
             HashedPassword = hashedPassword,
-            RoleId = roleId
+            Role = role
         };
         dbContext.Users.Add(user);
         dbContext.SaveChanges();

@@ -5,5 +5,5 @@ public class Role : Base
     public string Name { get; set; } = string.Empty;
     public int PowerLevel { get; set; }
     public string Permissions { get; set; } = string.Empty;
-    public virtual ICollection<User>? Users { get; set; }
+    public virtual ICollection<User> Users { get; set; }
 }
