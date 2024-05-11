@@ -1,16 +1,19 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OurForum.Backend.Services;
 
-namespace OurForum.Backend.Controllers
+namespace OurForum.Backend.Controllers;
+
+[Authorize]
+[ApiController]
+[Route("[controller]")]
+public class RoleController(IUserService userService, IRolesService rolesService) : Controller
 {
-    [Authorize]
-    [ApiController]
-    [Route("[controller]")]
-    public class RoleController : Controller
+    private readonly IRolesService _rolesService = rolesService;
+    private readonly IUserService _userService = userService;
+
+    public IActionResult Index()
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+        return View();
     }
 }

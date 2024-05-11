@@ -1,6 +1,8 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using OurForum.Backend.Services;
 using OurForum.Backend.Utility;
 
 namespace OurForum.Backend;
@@ -50,8 +52,15 @@ class OurForum
                 };
             });
         builder.Services.AddAuthorization();
-        builder.Services.AddControllers();
+
         builder.Services.AddAntiforgery();
+        builder.Services.AddDbContext<DatabaseContext>();
+
+        //builder.Services.AddCors();
+        builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IRolesService, RolesService>();
+
+        builder.Services.AddControllers();
 
         var app = builder.Build();
 

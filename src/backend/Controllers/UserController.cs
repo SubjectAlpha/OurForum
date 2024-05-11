@@ -14,14 +14,15 @@ namespace OurForum.Backend.Controllers;
 [Authorize]
 [ApiController]
 [Route("[controller]")]
-public class UserController : Controller
+public class UserController(
+    IUserService userService,
+    IRolesService rolesService,
+    ILogger<UserController> logger
+) : Controller
 {
-    private readonly ILogger<UserController> _logger;
-
-    public UserController(ILogger<UserController> logger)
-    {
-        _logger = logger;
-    }
+    private readonly IRolesService _rolesService = rolesService;
+    private readonly IUserService _userService = userService;
+    private readonly ILogger<UserController> _logger = logger;
 
     [HttpGet("{id}")]
     [RequiresPermission(Permissions.READ_PROFILE)]
@@ -64,8 +65,8 @@ public class UserController : Controller
             return BadRequest("Email/Password validation failed");
         }
 
-        var role = IRolesService.Get(SystemRoles.USER);
-        var newUser = IUserService.Create(body.Alias, body.Email, body.Password, role!);
+        var role = _rolesService.Get(SystemRoles.USER);
+        var newUser = _userService.Create(body.Alias, body.Email, body.Password, role!);
 
         if (newUser != null)
         {

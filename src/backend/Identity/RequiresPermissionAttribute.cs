@@ -16,7 +16,8 @@ public class RequiresPermissionAttribute(string permission) : Attribute, IAuthor
         );
         if (roleIdClaim != null)
         {
-            var permissions = IRolesService.GetPermissions(Guid.Parse(roleIdClaim.Value));
+            var rolesService = new RolesService();
+            var permissions = rolesService.GetPermissions(Guid.Parse(roleIdClaim.Value));
             if (permissions == null || !permissions.Contains(_permission))
             {
                 context.Result = new ForbidResult();

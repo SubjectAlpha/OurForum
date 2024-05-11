@@ -5,7 +5,20 @@ namespace OurForum.Backend.Services;
 
 public interface IUserService
 {
-    static User? Create(string alias, string email, string hashedPassword, Role role)
+    public User? Create(string alias, string email, string hashedPassword, Role role);
+
+    public User? Get(Guid id);
+
+    public User? GetByEmail(string email);
+
+    public IEnumerable<string>? GetPermissions(Guid userId);
+}
+
+public class UserService : IUserService
+{
+    public UserService() { }
+
+    public User? Create(string alias, string email, string hashedPassword, Role role)
     {
         using var dbContext = new DatabaseContext();
         dbContext.Database.EnsureCreated();
@@ -21,19 +34,19 @@ public interface IUserService
         return dbContext.Users.FirstOrDefault(x => x.Email == email);
     }
 
-    static User? Get(Guid id)
+    public User? Get(Guid id)
     {
         using var dbContext = new DatabaseContext();
         return dbContext.Users.FirstOrDefault(x => x.Id == id);
     }
 
-    static User? GetByEmail(string email)
+    public User? GetByEmail(string email)
     {
         using var dbContext = new DatabaseContext();
         return dbContext.Users.FirstOrDefault(x => x.Email == email);
     }
 
-    static IEnumerable<string>? GetPermissions(Guid userId)
+    public IEnumerable<string>? GetPermissions(Guid userId)
     {
         var user = Get(userId);
 
@@ -44,9 +57,4 @@ public interface IUserService
 
         return [];
     }
-}
-
-public class UserService : IUserService
-{
-    public UserService() { }
 }

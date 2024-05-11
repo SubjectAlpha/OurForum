@@ -13,7 +13,8 @@ namespace OurForum.Backend.Services
 
         public static string Authenticate(string email, string password)
         {
-            var user = IUserService.GetByEmail(email);
+            var userService = new UserService();
+            var user = userService.GetByEmail(email);
 
             if (user is not null && HashMan.Verify(password, user.HashedPassword))
             {
