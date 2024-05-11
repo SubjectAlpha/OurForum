@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using OurForum.Backend.Services;
+using OurForum.Backend.Utility;
 
 namespace OurForum.Backend.Identity;
 
@@ -16,7 +17,8 @@ public class RequiresPermissionAttribute(string permission) : Attribute, IAuthor
         );
         if (roleIdClaim != null)
         {
-            var rolesService = new RolesService();
+            using var dbContext = new DatabaseContext();
+            var rolesService = new RolesService(dbContext);
             var permissions = rolesService.GetPermissions(Guid.Parse(roleIdClaim.Value));
             if (permissions == null || !permissions.Contains(_permission))
             {

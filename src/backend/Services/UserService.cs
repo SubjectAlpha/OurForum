@@ -5,7 +5,7 @@ namespace OurForum.Backend.Services;
 
 public interface IUserService
 {
-    public User? Create(string alias, string email, string hashedPassword, Role role);
+    public User? Create(string alias, string email, string hashedPassword, Role? role);
 
     public User? Get(Guid id);
 
@@ -14,14 +14,13 @@ public interface IUserService
     public IEnumerable<string>? GetPermissions(Guid userId);
 }
 
-public class UserService : IUserService
+public class UserService(DatabaseContext context) : IUserService
 {
-    public UserService() { }
+    private readonly DatabaseContext _context = context;
 
     public User? Create(string alias, string email, string hashedPassword, Role role)
     {
-        using var dbContext = new DatabaseContext();
-        dbContext.Database.EnsureCreated();
+        _context.Database.EnsureCreated();
         var user = new User
         {
             Alias = alias,
@@ -29,21 +28,20 @@ public class UserService : IUserService
             HashedPassword = hashedPassword,
             Role = role
         };
-        dbContext.Users.Add(user);
-        dbContext.SaveChanges();
-        return dbContext.Users.FirstOrDefault(x => x.Email == email);
+        _context.Users.Add(user);
+        _context.SaveChanges();
+
+        return _context.Users.FirstOrDefault(x => x.Email == email);
     }
 
     public User? Get(Guid id)
     {
-        using var dbContext = new DatabaseContext();
-        return dbContext.Users.FirstOrDefault(x => x.Id == id);
+        return _context.Users.FirstOrDefault(x => x.Id == id);
     }
 
     public User? GetByEmail(string email)
     {
-        using var dbContext = new DatabaseContext();
-        return dbContext.Users.FirstOrDefault(x => x.Email == email);
+        return _context.Users.FirstOrDefault(x => x.Email == email);
     }
 
     public IEnumerable<string>? GetPermissions(Guid userId)
