@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using OurForum.Backend.Extensions;
 using OurForum.Backend.Identity;
 using OurForum.Backend.Utility;
 
@@ -33,7 +34,11 @@ namespace OurForum.Backend.Services
 
                 foreach (var claim in user.Role?.Permissions.Split(";") ?? [])
                 {
-                    claims.Add(new Claim(claim, claim));
+                    var permissionProperties = typeof(Permissions).HasField(claim);
+                    if (permissionProperties)
+                    {
+                        claims.Add(new Claim(claim, claim));
+                    }
                 }
 
                 var tokenDescriptor = new SecurityTokenDescriptor

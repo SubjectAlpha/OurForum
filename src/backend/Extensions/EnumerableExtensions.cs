@@ -1,11 +1,13 @@
-﻿namespace OurForum.Backend.Utility;
+﻿using OurForum.Backend.Utility;
 
-public static partial class Enumerable
+namespace OurForum.Backend.Extensions;
+
+public static partial class EnumerableExtensions
 {
     public static bool SlowEqual<TSource>(
         this IEnumerable<TSource> first,
         IEnumerable<TSource> second
-    ) => SlowEqual(first, second, null);
+    ) => first.SlowEqual(second, null);
 
     public static bool SlowEqual<TSource>(
         this IEnumerable<TSource> first,

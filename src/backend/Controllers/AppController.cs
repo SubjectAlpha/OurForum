@@ -1,8 +1,5 @@
-﻿using System.Text;
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Authorization;
+﻿using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
-using OurForum.Backend.Entities;
 using OurForum.Backend.Identity;
 using OurForum.Backend.Services;
 using OurForum.Backend.Utility;
@@ -17,43 +14,55 @@ public class AppController(IUserService userService, IRolesService rolesService)
     private readonly IUserService _userService = userService;
 
     [HttpPost("setup")]
-    public IActionResult Setup([FromBody] AppInit initData)
+    public async Task<IActionResult> Setup([FromBody] AppInit initData)
     {
-        //using var db = new DatabaseContext();
-        //if (!db.Roles.Any())
-        //{
-        var permissions = string.Empty;
-        typeof(Permissions)
-            .GetFields()
-            .ToList()
-            .ForEach(p =>
+        var roles = await _rolesService.GetAll();
+        if (roles?.Count == 0)
+        {
+            var validated = UserController.LoginRequestValidation(
+                new UserController.LoginRequest
+                {
+                    Email = initData.Email,
+                    Password = initData.Password,
+                }
+            );
+
+            if (validated.Errors.Count == 0)
             {
-                permissions += $"{p.Name};";
-            });
+                var permissions = string.Empty;
+                typeof(Permissions)
+                    .GetFields()
+                    .ToList()
+                    .ForEach(p =>
+                    {
+                        permissions += $"{p.Name};";
+                    });
 
-        var createUserRoleResponse = _rolesService.Create(
-            SystemRoles.USER,
-            $"{Permissions.READ_PROFILE};{Permissions.CREATE_POST}",
-            SystemRoles.USER_POWERLEVEL
-        );
-        var createAdminRoleResponse = _rolesService.Create(
-            SystemRoles.ADMIN,
-            permissions,
-            SystemRoles.ADMIN_POWERLEVEL
-        );
-        var createAdminAccountResponse = _userService.Create(
-            initData.Username,
-            initData.Email,
-            HashMan.HashString(initData.Password),
-            createAdminRoleResponse!
-        );
+                var createUserRoleResponse = await _rolesService.Create(
+                    SystemRoles.USER,
+                    $"{Permissions.READ_PROFILE};{Permissions.CREATE_POST}",
+                    SystemRoles.USER_POWERLEVEL
+                );
+                var createAdminRoleResponse = await _rolesService.Create(
+                    SystemRoles.ADMIN,
+                    permissions,
+                    SystemRoles.ADMIN_POWERLEVEL
+                );
+                var createAdminAccountResponse = _userService.Create(
+                    initData.Username,
+                    initData.Email,
+                    HashMan.HashString(initData.Password),
+                    createAdminRoleResponse!
+                );
 
-        return Ok(createAdminRoleResponse);
-        //}
-        //else
-        //{
-        //    return Forbid();
-        //}
+                return Ok();
+            }
+            return BadRequest("Email/Password validation failed");
+        }
+        else
+        {
+            return Forbid();
+        }
     }
 
     public struct AppInit

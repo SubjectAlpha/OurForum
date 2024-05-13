@@ -11,9 +11,9 @@ class OurForum
 {
     public static void Main(string[] args)
     {
-        var envLoaded = EnvironmentVariables.Load(".dev.env", ".env");
+        var envLoaded = EnvironmentVariables.Load(".env"); // TODO: accept args here
 
-        if (envLoaded.Success)
+        if (envLoaded.Errors.Count == 0)
         {
             Console.WriteLine("Successfully loaded all env vars");
         }

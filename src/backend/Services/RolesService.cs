@@ -1,29 +1,33 @@
-﻿using OurForum.Backend.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using OurForum.Backend.Entities;
 using OurForum.Backend.Utility;
 
 namespace OurForum.Backend.Services;
 
 public interface IRolesService
 {
-    public IList<string>? GetPermissions(Guid roleId);
-    public Role? Get(string name);
-    public Role? Create(string name, string permissions, int powerLevel);
+    public Task<IList<string>?> GetPermissions(Guid roleId);
+    public Task<Role?> Get(string name);
+    public Task<Role?> Create(string name, string permissions, int powerLevel);
+    public Task<IList<Role>?> GetAll();
 }
 
 public class RolesService(DatabaseContext context) : IRolesService
 {
     private readonly DatabaseContext _context = context;
-    public IList<string>? GetPermissions(Guid roleId)
+
+    public async Task<IList<string>?> GetPermissions(Guid roleId)
     {
-        return _context.Roles.FirstOrDefault(x => x.Id == roleId)?.Permissions.Split(";");
+        var roles = await _context.Roles.FirstOrDefaultAsync(x => x.Id == roleId);
+        return roles?.Permissions.Split(";");
     }
 
-    public Role? Get(string name)
+    public async Task<Role?> Get(string name)
     {
-        return _context.Roles.FirstOrDefault(x => x.Name == name);
+        return await _context.Roles.FirstOrDefaultAsync(x => x.Name == name);
     }
 
-    public Role? Create(string name, string permissions, int powerLevel)
+    public async Task<Role?> Create(string name, string permissions, int powerLevel)
     {
         _context.Database.EnsureCreated();
         var r = new Role
@@ -34,6 +38,12 @@ public class RolesService(DatabaseContext context) : IRolesService
         };
         _context.Roles.Add(r);
         _context.SaveChanges();
-        return _context.Roles.FirstOrDefault(x => x.Name == r.Name);
+        return await _context.Roles.FirstOrDefaultAsync(x => x.Name == r.Name);
+    }
+
+    public async Task<IList<Role>?> GetAll()
+    {
+        _context.Database.EnsureCreated();
+        return await _context.Roles.ToListAsync();
     }
 }

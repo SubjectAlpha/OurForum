@@ -1,4 +1,5 @@
-﻿using OurForum.Backend.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using OurForum.Backend.Entities;
 using OurForum.Backend.Utility;
 
 namespace OurForum.Backend.Services;
@@ -31,17 +32,17 @@ public class UserService(DatabaseContext context) : IUserService
         _context.Users.Add(user);
         _context.SaveChanges();
 
-        return _context.Users.FirstOrDefault(x => x.Email == email);
+        return _context.Users.Include(x => x.Role).FirstOrDefault(x => x.Email == email);
     }
 
     public User? Get(Guid id)
     {
-        return _context.Users.FirstOrDefault(x => x.Id == id);
+        return _context.Users.Include(x => x.Role).FirstOrDefault(x => x.Id == id);
     }
 
     public User? GetByEmail(string email)
     {
-        return _context.Users.FirstOrDefault(x => x.Email == email);
+        return _context.Users.Include(x => x.Role).FirstOrDefault(x => x.Email == email);
     }
 
     public IEnumerable<string>? GetPermissions(Guid userId)

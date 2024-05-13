@@ -19,7 +19,7 @@ public class RequiresPermissionAttribute(string permission) : Attribute, IAuthor
         {
             using var dbContext = new DatabaseContext();
             var rolesService = new RolesService(dbContext);
-            var permissions = rolesService.GetPermissions(Guid.Parse(roleIdClaim.Value));
+            var permissions = rolesService.GetPermissions(Guid.Parse(roleIdClaim.Value)).Result;
             if (permissions == null || !permissions.Contains(_permission))
             {
                 context.Result = new ForbidResult();

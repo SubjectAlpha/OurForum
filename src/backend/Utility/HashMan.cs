@@ -1,8 +1,8 @@
 ﻿// Taken from https://codereview.stackexchange.com/questions/176697/net-core-mvc-future-proof-hashing-of-passwords and modified based on feedback in comments
 // Credit https://codereview.stackexchange.com/users/103419/christian-gollhardt
 using System.Security.Cryptography;
-using System.Text;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using OurForum.Backend.Extensions;
 
 namespace OurForum.Backend.Utility;
 

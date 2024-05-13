@@ -1,10 +1,7 @@
-using System.Diagnostics;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
 using backend.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OurForum.Backend.Entities;
 using OurForum.Backend.Identity;
 using OurForum.Backend.Services;
 using OurForum.Backend.Utility;
@@ -26,7 +23,7 @@ public class UserController(
 
     [HttpGet("{id}")]
     [RequiresPermission(Permissions.READ_PROFILE)]
-    public IActionResult Get(string id)
+    public async Task<IActionResult> Get(string id)
     {
         Console.WriteLine(HttpContext.Request);
         return StatusCode(204);
@@ -37,7 +34,7 @@ public class UserController(
     public IActionResult Authenticate([FromBody] LoginRequest body)
     {
         var validationResult = LoginRequestValidation(body);
-        if (!validationResult.Success)
+        if (validationResult.Errors.Count > 0)
         {
             return BadRequest("Email/Password validation failed");
         }
@@ -53,11 +50,11 @@ public class UserController(
 
     [HttpPost("register")]
     [AllowAnonymous]
-    public IActionResult Register([FromBody] RegistrationRequest body)
+    public async Task<IActionResult> Register([FromBody] RegistrationRequest body)
     {
         var validationResult = LoginRequestValidation(body);
         if (
-            !validationResult.Success
+            validationResult.Errors.Count > 0
             || !RegexValidation.ValidatePassword(body.ConfirmPassword)
             || !body.Password.Equals(body.ConfirmPassword)
         )
@@ -65,7 +62,7 @@ public class UserController(
             return BadRequest("Email/Password validation failed");
         }
 
-        var role = _rolesService.Get(SystemRoles.USER);
+        var role = await _rolesService.Get(SystemRoles.USER);
         var newUser = _userService.Create(body.Alias, body.Email, body.Password, role!);
 
         if (newUser != null)
@@ -75,7 +72,7 @@ public class UserController(
         return StatusCode(500, "Failed to create user");
     }
 
-    private static ServiceResponse LoginRequestValidation(LoginRequest body)
+    public static ServiceResponse LoginRequestValidation(LoginRequest body)
     {
         var response = new ServiceResponse();
         if (string.IsNullOrWhiteSpace(body.Email) || string.IsNullOrWhiteSpace(body.Password))
@@ -93,7 +90,6 @@ public class UserController(
             response.Errors.Add("Password validation failed");
         }
 
-        response.Success = response.Errors.Count > 0;
         return response;
     }
 

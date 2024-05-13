@@ -79,15 +79,10 @@ public static class EnvironmentVariables
                         }
                     }
                     Console.WriteLine($"Loaded env vars from {filePath}");
-                    if (response.Errors.Count == 0)
-                    {
-                        response.Success = true;
-                    }
                 }
             }
             catch (Exception e)
             {
-                response.Success = false;
                 response.Errors.Add(e.Message);
                 continue;
             }
