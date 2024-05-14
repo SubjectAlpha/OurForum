@@ -23,10 +23,11 @@ public class UserController(
 
     [HttpGet("{id}")]
     [RequiresPermission(Permissions.READ_PROFILE)]
-    public async Task<IActionResult> Get(string id)
+    public IActionResult Get(string id)
     {
-        Console.WriteLine(HttpContext.Request);
-        return StatusCode(204);
+        var parsedId = Guid.Parse(id);
+        var user = _userService.Get(parsedId);
+        return Ok(user);
     }
 
     [HttpPost("authenticate")]

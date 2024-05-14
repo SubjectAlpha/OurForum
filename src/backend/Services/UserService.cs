@@ -19,7 +19,7 @@ public class UserService(DatabaseContext context) : IUserService
 {
     private readonly DatabaseContext _context = context;
 
-    public User? Create(string alias, string email, string hashedPassword, Role role)
+    public User? Create(string alias, string email, string hashedPassword, Role? role)
     {
         _context.Database.EnsureCreated();
         var user = new User

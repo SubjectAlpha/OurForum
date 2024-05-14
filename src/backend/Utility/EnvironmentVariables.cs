@@ -14,12 +14,7 @@ public static class EnvironmentVariables
 
     public static readonly string JWT_KEY = GetEnvironmentVariable(
         nameof(JWT_KEY),
-        "developmentKeyValue"
-    );
-
-    public static readonly string JWT_SECRET = GetEnvironmentVariable(
-        nameof(JWT_SECRET),
-        "developmentSecretValue"
+        "superSecretDevelopmentKeyValueDoNotTellAnyoneChangeThisInProduction"
     );
 
     public static readonly string SQL_DATABASE = GetEnvironmentVariable(

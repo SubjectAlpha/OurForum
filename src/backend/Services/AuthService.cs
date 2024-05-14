@@ -21,7 +21,7 @@ namespace OurForum.Backend.Services
             if (user is not null && HashMan.Verify(password, user.HashedPassword))
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.Unicode.GetBytes(EnvironmentVariables.JWT_SECRET);
+                var key = Encoding.UTF8.GetBytes(EnvironmentVariables.JWT_KEY);
 
                 var claims = new List<Claim>
                 {
@@ -53,7 +53,7 @@ namespace OurForum.Backend.Services
                     )
                 };
 
-                var encodedJwt = tokenHandler.CreateEncodedJwt(tokenDescriptor);
+                //var encodedJwt = tokenHandler.CreateEncodedJwt(tokenDescriptor);
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 var x = tokenHandler.WriteToken(token);
 
