@@ -73,7 +73,7 @@ public class UserController(
         return StatusCode(500, "Failed to create user");
     }
 
-    public static ServiceResponse LoginRequestValidation(LoginRequest body)
+    internal static ServiceResponse LoginRequestValidation(LoginRequest body)
     {
         var response = new ServiceResponse();
         if (string.IsNullOrWhiteSpace(body.Email) || string.IsNullOrWhiteSpace(body.Password))

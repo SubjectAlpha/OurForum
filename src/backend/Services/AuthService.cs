@@ -53,53 +53,10 @@ namespace OurForum.Backend.Services
                     )
                 };
 
-                //var encodedJwt = tokenHandler.CreateEncodedJwt(tokenDescriptor);
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                var x = tokenHandler.WriteToken(token);
-
-                return x;
+                return tokenHandler.CreateEncodedJwt(tokenDescriptor);
             }
 
             return string.Empty;
-        }
-
-        public static bool ValidateToken(string token)
-        {
-            if (string.IsNullOrEmpty(token))
-            {
-                return false;
-            }
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(EnvironmentVariables.JWT_SECRET);
-            try
-            {
-                tokenHandler.ValidateToken(
-                    token,
-                    new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(key),
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
-                        ClockSkew = TimeSpan.Zero
-                    },
-                    out SecurityToken validatedToken
-                );
-
-                var jwtToken = (JwtSecurityToken)validatedToken;
-                if (string.IsNullOrEmpty(jwtToken.Claims.First(x => x.Type == "UserId").Value))
-                {
-                    return false;
-                }
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
         }
     }
 }
