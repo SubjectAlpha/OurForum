@@ -6,20 +6,21 @@ namespace OurForum.Backend.Services;
 
 public interface IUserService
 {
-    public User? Create(string alias, string email, string hashedPassword, Role? role);
+    public Task<User?> Create(string alias, string email, string hashedPassword, Role? role);
+    public Task<User?> Update(User u);
 
-    public User? Get(Guid id);
+    public Task<User?> Get(Guid id);
 
-    public User? GetByEmail(string email);
+    public Task<User?> GetByEmail(string email);
 
-    public IEnumerable<string>? GetPermissions(Guid userId);
+    public Task<IEnumerable<string>?> GetPermissions(Guid userId);
 }
 
 public class UserService(DatabaseContext context) : IUserService
 {
     private readonly DatabaseContext _context = context;
 
-    public User? Create(string alias, string email, string hashedPassword, Role? role)
+    public async Task<User?> Create(string alias, string email, string hashedPassword, Role? role)
     {
         _context.Database.EnsureCreated();
         var user = new User
@@ -30,24 +31,37 @@ public class UserService(DatabaseContext context) : IUserService
             Role = role
         };
         _context.Users.Add(user);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
-        return _context.Users.Include(x => x.Role).FirstOrDefault(x => x.Email == email);
+        return await _context.Users.Include(x => x.Role).FirstOrDefaultAsync(x => x.Email == email);
     }
 
-    public User? Get(Guid id)
+    public async Task<User?> Update(User u)
     {
-        return _context.Users.Include(x => x.Role).FirstOrDefault(x => x.Id == id);
+        if(u.Id != Guid.Empty)
+        {
+            _context.Users.Update(u);
+            await _context.SaveChangesAsync();
+
+            return await Get(u.Id);
+        }
+
+        return null;
     }
 
-    public User? GetByEmail(string email)
+    public async Task<User?> Get(Guid id)
     {
-        return _context.Users.Include(x => x.Role).FirstOrDefault(x => x.Email == email);
+        return await _context.Users.Include(x => x.Role).FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public IEnumerable<string>? GetPermissions(Guid userId)
+    public async Task<User?> GetByEmail(string email)
     {
-        var user = Get(userId);
+        return await _context.Users.Include(x => x.Role).FirstOrDefaultAsync(x => x.Email == email);
+    }
+
+    public async Task<IEnumerable<string>?> GetPermissions(Guid userId)
+    {
+        var user = await Get(userId);
 
         if (user is not null)
         {

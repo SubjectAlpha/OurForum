@@ -16,7 +16,7 @@ namespace OurForum.Backend.Services
         {
             using var dbContext = new DatabaseContext();
             var userService = new UserService(dbContext);
-            var user = userService.GetByEmail(email);
+            var user = userService.GetByEmail(email).Result;
 
             if (user is not null && HashMan.Verify(password, user.HashedPassword))
             {

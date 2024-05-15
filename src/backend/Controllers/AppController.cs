@@ -48,7 +48,7 @@ public class AppController(IUserService userService, IRolesService rolesService)
                     permissions,
                     SystemRoles.ADMIN_POWERLEVEL
                 );
-                var createAdminAccountResponse = _userService.Create(
+                var createAdminAccountResponse = await _userService.Create(
                     initData.Username,
                     initData.Email,
                     HashMan.HashString(initData.Password),

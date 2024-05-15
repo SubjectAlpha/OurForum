@@ -23,10 +23,10 @@ public class UserController(
 
     [HttpGet("{id}")]
     [RequiresPermission(Permissions.READ_PROFILE)]
-    public IActionResult Get(string id)
+    public async Task<IActionResult> Get(string id)
     {
         var parsedId = Guid.Parse(id);
-        var user = _userService.Get(parsedId);
+        var user = await _userService.Get(parsedId);
         return Ok(user);
     }
 
@@ -64,7 +64,7 @@ public class UserController(
         }
 
         var role = await _rolesService.Get(SystemRoles.USER);
-        var newUser = _userService.Create(body.Alias, body.Email, body.Password, role!);
+        var newUser = await _userService.Create(body.Alias, body.Email, body.Password, role!);
 
         if (newUser != null)
         {
