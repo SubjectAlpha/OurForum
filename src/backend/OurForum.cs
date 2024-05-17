@@ -1,6 +1,5 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using OurForum.Backend.Services;
 using OurForum.Backend.Utility;
@@ -9,9 +8,25 @@ namespace OurForum.Backend;
 
 class OurForum
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var envLoaded = EnvironmentVariables.Load(".env"); // TODO: accept args here
+        using var npmBuildProcess = new NpmHelper();
+
+#if DEBUG
+        await npmBuildProcess.RunAsync("dev");
+#elif !DEBUG
+        // TODO: Going to wanna do something different here,
+        await npmBuildProcess.RunAsync("ci");
+        await npmBuildProcess.RunAsync("build");
+        await npmBuildProcess.RunAsync("start");
+#endif
+
+        Console.WriteLine(
+            npmBuildProcess.HasServer
+                ? $"From ASP.NET Core. Parcel is started ({npmBuildProcess.HasServer}) @ {npmBuildProcess.Url} at process: {npmBuildProcess.ProcessId}"
+                : "Script has executed."
+        );
 
         if (envLoaded.Errors.Count == 0)
         {

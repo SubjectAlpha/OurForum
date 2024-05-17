@@ -17,7 +17,9 @@ public class RequiresPermissionAttribute(params string[] permissions)
         var roleIdClaim = context.HttpContext.User.Claims.FirstOrDefault(x =>
             x.Type == CustomClaims.ROLE_ID
         );
-        var userIdClaim = context.HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaims.USER_ID);
+        var userIdClaim = context.HttpContext.User.Claims.FirstOrDefault(x =>
+            x.Type == CustomClaims.USER_ID
+        );
 
         if (roleIdClaim != null && userIdClaim != null)
         {

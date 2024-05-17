@@ -16,7 +16,7 @@ namespace OurForum.Backend.Controllers
             var currentUserId = HttpContext.User.Claims.FirstOrDefault(x =>
                 x.Type == CustomClaims.USER_ID
             );
-            if ((currentUserId is not null) && (userService is not null)) 
+            if ((currentUserId is not null) && (userService is not null))
             {
                 return await userService.Get(Guid.Parse(currentUserId.Value));
             }
