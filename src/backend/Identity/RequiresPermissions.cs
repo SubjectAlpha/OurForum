@@ -6,7 +6,7 @@ using OurForum.Backend.Utility;
 namespace OurForum.Backend.Identity;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class RequiresPermissionAttribute(params string[] permissions)
+public class RequiresPermissionsAttribute(params string[] permissions)
     : Attribute,
         IAuthorizationFilter
 {
@@ -17,26 +17,22 @@ public class RequiresPermissionAttribute(params string[] permissions)
         var roleIdClaim = context.HttpContext.User.Claims.FirstOrDefault(x =>
             x.Type == CustomClaims.ROLE_ID
         );
-        var userIdClaim = context.HttpContext.User.Claims.FirstOrDefault(x => x.Type == CustomClaims.USER_ID);
-
-        if (roleIdClaim != null && userIdClaim != null)
+        if (roleIdClaim != null)
         {
             using var dbContext = new DatabaseContext();
             var rolesService = new RolesService(dbContext);
-            var userRolePermissions = rolesService
-                .GetPermissions(Guid.Parse(roleIdClaim.Value))
-                .Result;
+            var userPermissions = rolesService.GetPermissions(Guid.Parse(roleIdClaim.Value)).Result;
             var errors = 0;
 
             foreach (var permission in _permissions)
             {
-                if (userRolePermissions == null || !userRolePermissions.Contains(permission))
+                if (userPermissions == null || !userPermissions.Contains(permission))
                 {
                     errors++;
                 }
             }
 
-            if (errors >= _permissions.Length)
+            if (errors > 0)
             {
                 context.Result = new ForbidResult();
             }

@@ -1,7 +1,13 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using System.Text.Json.Serialization;
 using backend.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using OurForum.Backend.Entities;
+using OurForum.Backend.Extensions;
 using OurForum.Backend.Identity;
 using OurForum.Backend.Services;
 using OurForum.Backend.Utility;
@@ -15,24 +21,15 @@ public class UserController(
     IUserService userService,
     IRolesService rolesService,
     ILogger<UserController> logger
-) : Controller
+) : BaseController<UserController>(userService, rolesService, logger)
 {
     private readonly IRolesService _rolesService = rolesService;
     private readonly IUserService _userService = userService;
     private readonly ILogger<UserController> _logger = logger;
 
-    [HttpGet("{id}")]
-    [RequiresPermission(Permissions.READ_PROFILE)]
-    public async Task<IActionResult> Get(string id)
-    {
-        var parsedId = Guid.Parse(id);
-        var user = await _userService.Get(parsedId);
-        return Ok(user);
-    }
-
     [HttpPost("authenticate")]
     [AllowAnonymous]
-    public IActionResult Authenticate([FromBody] LoginRequest body)
+    public async Task<IActionResult> Authenticate([FromBody] LoginRequest body)
     {
         var validationResult = LoginRequestValidation(body);
         if (validationResult.Errors.Count > 0)
@@ -40,7 +37,7 @@ public class UserController(
             return BadRequest("Email/Password validation failed");
         }
 
-        var token = AuthService.Authenticate(body.Email, body.Password);
+        var token = await Authenticate(body.Email, body.Password);
         if (!string.IsNullOrEmpty(token))
         {
             return Ok(token);
@@ -68,9 +65,40 @@ public class UserController(
 
         if (newUser != null)
         {
-            return Authenticate(body);
+            return await Authenticate(body);
         }
         return StatusCode(500, "Failed to create user");
+    }
+
+    [HttpGet("{id}")]
+    [RequiresPermission(Permissions.READ_PROFILE)]
+    public async Task<IActionResult> Get(string id)
+    {
+        var parsedId = Guid.Parse(id);
+        var user = await _userService.Get(parsedId);
+        return Ok(user);
+    }
+
+    [HttpPost("{id}")]
+    [RequiresPermission(Permissions.ADMIN_UPDATE_PROFILE)]
+    public async Task<IActionResult> Post(string id, [FromBody] User u)
+    {
+        // Probably ignore this and just user registration?
+        return Ok();
+    }
+
+    [HttpPatch("{id}")]
+    [RequiresPermission(Permissions.ADMIN_UPDATE_PROFILE, Permissions.UPDATE_PROFILE)]
+    public async Task<IActionResult> Patch(string id, [FromBody] User u)
+    {
+        var currentUserTask = GetCurrentUser();
+        if (u.Id == Guid.Parse(id))
+        {
+            var currentUser = await currentUserTask;
+            var update = await _userService.Update(u);
+            return Ok(update);
+        }
+        return BadRequest();
     }
 
     internal static ServiceResponse LoginRequestValidation(LoginRequest body)
@@ -92,6 +120,53 @@ public class UserController(
         }
 
         return response;
+    }
+
+    internal readonly TimeSpan TokenLifetime = TimeSpan.FromHours(8);
+
+    internal async Task<string> Authenticate(string email, string password)
+    {
+        var user = await _userService.GetByEmail(email);
+
+        if (user is not null && HashMan.Verify(password, user.HashedPassword))
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(EnvironmentVariables.JWT_KEY);
+
+            var claims = new List<Claim>
+            {
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new(JwtRegisteredClaimNames.Sub, user.Email),
+                new(JwtRegisteredClaimNames.Email, user.Email),
+                new(CustomClaims.USER_ID, user.Id.ToString()),
+                new(CustomClaims.ROLE_ID, user.Role?.Id.ToString() ?? string.Empty),
+            };
+
+            foreach (var claim in user.Role?.Permissions.Split(";") ?? [])
+            {
+                var permissionProperties = typeof(Permissions).HasField(claim);
+                if (permissionProperties)
+                {
+                    claims.Add(new Claim(claim, claim));
+                }
+            }
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Audience = EnvironmentVariables.JWT_AUDIENCE,
+                Issuer = EnvironmentVariables.JWT_ISSUER,
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.Add(TokenLifetime),
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature
+                )
+            };
+
+            return tokenHandler.CreateEncodedJwt(tokenDescriptor);
+        }
+
+        return string.Empty;
     }
 
     public class LoginRequest

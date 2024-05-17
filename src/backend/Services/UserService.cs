@@ -38,7 +38,7 @@ public class UserService(DatabaseContext context) : IUserService
 
     public async Task<User?> Update(User u)
     {
-        if(u.Id != Guid.Empty)
+        if (u.Id != Guid.Empty)
         {
             _context.Users.Update(u);
             await _context.SaveChangesAsync();
@@ -47,6 +47,18 @@ public class UserService(DatabaseContext context) : IUserService
         }
 
         return null;
+    }
+
+    public async Task<bool> Delete(User u)
+    {
+        if (u.Id != Guid.Empty)
+        {
+            u.IsDeleted = true;
+            _context.Update(u);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        return false;
     }
 
     public async Task<User?> Get(Guid id)

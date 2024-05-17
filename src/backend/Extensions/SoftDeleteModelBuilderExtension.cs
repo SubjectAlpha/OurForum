@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using OurForum.Backend.Entities;
-using System.Linq.Expressions;
 
 namespace OurForum.Backend.Extensions
 {
@@ -17,7 +17,10 @@ namespace OurForum.Backend.Extensions
 
                 var param = Expression.Parameter(entityType.ClrType, "entity");
                 var prop = Expression.PropertyOrField(param, nameof(Base.IsDeleted));
-                var entityNotDeleted = Expression.Lambda(Expression.Equal(prop, Expression.Constant(false)), param);
+                var entityNotDeleted = Expression.Lambda(
+                    Expression.Equal(prop, Expression.Constant(false)),
+                    param
+                );
 
                 entityType.SetQueryFilter(entityNotDeleted);
             }
