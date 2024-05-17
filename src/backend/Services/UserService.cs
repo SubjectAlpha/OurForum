@@ -7,7 +7,7 @@ namespace OurForum.Backend.Services;
 public interface IUserService
 {
     public Task<User?> Create(string alias, string email, string hashedPassword, Role? role);
-    public Task<User?> Update(User u);
+    public Task<User?> Update(User u, User updater);
 
     public Task<User?> Get(Guid id);
 
@@ -36,10 +36,12 @@ public class UserService(DatabaseContext context) : IUserService
         return await _context.Users.Include(x => x.Role).FirstOrDefaultAsync(x => x.Email == email);
     }
 
-    public async Task<User?> Update(User u)
+    public async Task<User?> Update(User u, User updater)
     {
         if (u.Id != Guid.Empty)
         {
+            u.Updater = updater.Id;
+            u.Updated = DateTime.UtcNow;
             _context.Users.Update(u);
             await _context.SaveChangesAsync();
 

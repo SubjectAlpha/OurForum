@@ -91,11 +91,10 @@ public class UserController(
     [RequiresPermission(Permissions.ADMIN_UPDATE_PROFILE, Permissions.UPDATE_PROFILE)]
     public async Task<IActionResult> Patch(string id, [FromBody] User u)
     {
-        var currentUserTask = GetCurrentUser();
         if (u.Id == Guid.Parse(id))
         {
-            var currentUser = await currentUserTask;
-            var update = await _userService.Update(u);
+            var currentUser = await GetCurrentUser();
+            var update = await _userService.Update(u, currentUser!);
             return Ok(update);
         }
         return BadRequest();

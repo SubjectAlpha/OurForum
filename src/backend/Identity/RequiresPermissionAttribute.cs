@@ -5,6 +5,10 @@ using OurForum.Backend.Utility;
 
 namespace OurForum.Backend.Identity;
 
+/// <summary>
+/// Performs XOR check on current user role permissions
+/// </summary>
+/// <param name="permissions"></param>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class RequiresPermissionAttribute(params string[] permissions)
     : Attribute,
@@ -21,12 +25,17 @@ public class RequiresPermissionAttribute(params string[] permissions)
             x.Type == CustomClaims.USER_ID
         );
 
-        if (roleIdClaim != null && userIdClaim != null)
+        var roleId = Guid.Empty;
+        var roleIdResult = Guid.TryParse(roleIdClaim!.Value, out roleId);
+        var userId = Guid.Empty;
+        var userIdResult = Guid.TryParse(userIdClaim!.Value, out userId);
+
+        if (roleIdResult && userIdResult)
         {
             using var dbContext = new DatabaseContext();
             var rolesService = new RolesService(dbContext);
             var userRolePermissions = rolesService
-                .GetPermissions(Guid.Parse(roleIdClaim.Value))
+                .GetPermissions(roleId)
                 .Result;
             var errors = 0;
 

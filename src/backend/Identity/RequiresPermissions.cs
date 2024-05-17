@@ -5,6 +5,10 @@ using OurForum.Backend.Utility;
 
 namespace OurForum.Backend.Identity;
 
+/// <summary>
+/// Performs INCLUSIVE OR check on user permissions
+/// </summary>
+/// <param name="permissions"></param>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class RequiresPermissionsAttribute(params string[] permissions)
     : Attribute,
@@ -17,7 +21,16 @@ public class RequiresPermissionsAttribute(params string[] permissions)
         var roleIdClaim = context.HttpContext.User.Claims.FirstOrDefault(x =>
             x.Type == CustomClaims.ROLE_ID
         );
-        if (roleIdClaim != null)
+        var userIdClaim = context.HttpContext.User.Claims.FirstOrDefault(x =>
+            x.Type == CustomClaims.USER_ID
+        );
+
+        var roleId = Guid.Empty;
+        var roleIdResult = Guid.TryParse(roleIdClaim!.Value, out roleId);
+        var userId = Guid.Empty;
+        var userIdResult = Guid.TryParse(userIdClaim!.Value, out userId);
+
+        if (roleIdResult && userIdResult)
         {
             using var dbContext = new DatabaseContext();
             var rolesService = new RolesService(dbContext);
