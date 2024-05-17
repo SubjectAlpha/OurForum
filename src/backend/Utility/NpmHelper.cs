@@ -10,8 +10,8 @@ public class NpmHelper : IDisposable
         RegexOptions.IgnoreCase | RegexOptions.Compiled
     );
 
-    private Process process;
-    public string Url { get; private set; }
+    private Process? process;
+    public string? Url { get; private set; }
     public bool HasServer => !string.IsNullOrEmpty(Url);
 
     public int ProcessId => process?.Id ?? 0;
@@ -46,59 +46,67 @@ public class NpmHelper : IDisposable
                 };
 
                 process = Process.Start(info);
-                process.EnableRaisingEvents = true;
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
 
-                // Process the NPM output and attempt
-                // to find a URL. This will stop processing
-                // when it finds the first URL
-                process.OutputDataReceived += (sender, eventArgs) =>
+                if (process == null)
                 {
-                    output?.Invoke(eventArgs.Data);
+                    signal.SetCanceled();
+                }
+                else
+                {
+                    process.EnableRaisingEvents = true;
+                    process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
 
-                    if (!string.IsNullOrEmpty(eventArgs.Data) && string.IsNullOrEmpty(Url))
+                    // Process the NPM output and attempt
+                    // to find a URL. This will stop processing
+                    // when it finds the first URL
+                    process.OutputDataReceived += (sender, eventArgs) =>
                     {
-                        var results = urls.Matches(eventArgs.Data);
+                        output?.Invoke(eventArgs!.Data!);
 
-                        if (results.Any())
+                        if (!string.IsNullOrEmpty(eventArgs.Data) && string.IsNullOrEmpty(Url))
                         {
-                            Url = results.First().Value;
-                            signal.SetResult(true);
+                            var results = urls.Matches(eventArgs.Data);
+
+                            if (results.Any())
+                            {
+                                Url = results.First().Value;
+                                signal.SetResult(true);
+                            }
                         }
-                    }
-                };
+                    };
 
-                // Terrible things have happened
-                // so we can stop waiting for the success
-                // event to occur, because it ain't happening
-                process.ErrorDataReceived += (sender, args) =>
-                {
-                    output?.Invoke(args.Data);
-
-                    if (!signal.Task.IsCompleted)
+                    // Terrible things have happened
+                    // so we can stop waiting for the success
+                    // event to occur, because it ain't happening
+                    process.ErrorDataReceived += (sender, args) =>
                     {
-                        Console.WriteLine("npm web server failed to start");
-                        signal.SetCanceled();
-                    }
-                };
+                        output?.Invoke(args!.Data!);
 
-                // set a timeout to wait for the process
-                // to finish starting and find the Url. If it doesn't then we
-                // assume that the user just ran a script
-                var cancellationTokenSource = new CancellationTokenSource(timeout);
-                cancellationTokenSource.Token.Register(
-                    () =>
-                    {
-                        if (signal.Task.IsCompleted)
-                            return;
+                        if (!signal.Task.IsCompleted)
+                        {
+                            Console.WriteLine("npm web server failed to start");
+                            signal.SetCanceled();
+                        }
+                    };
 
-                        // we don't want to wait for a url anymore
-                        Url = string.Empty;
-                        signal.SetResult(true);
-                    },
-                    false
-                );
+                    // set a timeout to wait for the process
+                    // to finish starting and find the Url. If it doesn't then we
+                    // assume that the user just ran a script
+                    var cancellationTokenSource = new CancellationTokenSource(timeout);
+                    cancellationTokenSource.Token.Register(
+                        () =>
+                        {
+                            if (signal.Task.IsCompleted)
+                                return;
+
+                            // we don't want to wait for a url anymore
+                            Url = string.Empty;
+                            signal.SetResult(true);
+                        },
+                        false
+                    );
+                }
             }
         }
 
