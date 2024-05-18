@@ -14,7 +14,7 @@ class OurForum
         using var npmBuildProcess = new NpmHelper();
 
 #if DEBUG
-        await npmBuildProcess.RunAsync("dev");
+        //await npmBuildProcess.RunAsync("dev");
 #elif !DEBUG
         // TODO: Going to wanna do something different here,
         await npmBuildProcess.RunAsync("ci");
