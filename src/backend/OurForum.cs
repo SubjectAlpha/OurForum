@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -11,23 +12,6 @@ class OurForum
     public static async Task Main(string[] args)
     {
         var envLoaded = EnvironmentVariables.Load(".env"); // TODO: accept args here
-        using var npmBuildProcess = new NpmHelper();
-
-#if DEBUG
-        //await npmBuildProcess.RunAsync("dev");
-#elif !DEBUG
-        // TODO: Going to wanna do something different here,
-        await npmBuildProcess.RunAsync("ci");
-        await npmBuildProcess.RunAsync("build");
-        await npmBuildProcess.RunAsync("start");
-#endif
-
-        Console.WriteLine(
-            npmBuildProcess.HasServer
-                ? $"From ASP.NET Core. Parcel is started ({npmBuildProcess.HasServer}) @ {npmBuildProcess.Url} at process: {npmBuildProcess.ProcessId}"
-                : "Script has executed."
-        );
-
         if (envLoaded.Errors.Count == 0)
         {
             Console.WriteLine("Successfully loaded all env vars");
@@ -39,7 +23,7 @@ class OurForum
             {
                 Console.WriteLine($"Error: {error}");
             }
-        }
+        }        
 
         var builder = WebApplication.CreateBuilder(args);
 
@@ -71,7 +55,7 @@ class OurForum
         builder.Services.AddAntiforgery();
         builder.Services.AddDbContext<DatabaseContext>();
 
-        //builder.Services.AddCors();
+        builder.Services.AddCors();
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IRolesService, RolesService>();
 

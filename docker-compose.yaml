@@ -1,0 +1,22 @@
+services:
+  backend:
+    image: ourforum-backend
+    ports:
+      - 5001:5001
+  frontend:
+    image: ourforum-frontend
+    ports:
+      - 5000:5000
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    volumes:
+      - ${pwd}\mssql\data:/var/opt/mssql/data
+      - ${pwd}\mssql\log:/var/opt/mssql/log
+      - ${pwd}\mssql\secrets:/var/opt/mssql/secrets
+    restart: always
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=str0ngDevelopmentPassw0rd!
+      - TZ=America/New_York
+    ports:
+      - 1433:1433
