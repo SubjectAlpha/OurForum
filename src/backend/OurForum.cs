@@ -23,7 +23,7 @@ class OurForum
             {
                 Console.WriteLine($"Error: {error}");
             }
-        }        
+        }
 
         var builder = WebApplication.CreateBuilder(args);
 
@@ -55,7 +55,22 @@ class OurForum
         builder.Services.AddAntiforgery();
         builder.Services.AddDbContext<DatabaseContext>();
 
-        builder.Services.AddCors();
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(
+                "_allowSpecificHosts",
+                policy =>
+                {
+                    policy.WithOrigins(
+                        [
+                            "https://localhost:5443",
+                            "http://localhost:5080",
+                            "http://localhost:5173/"
+                        ]
+                    );
+                }
+            );
+        });
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IRolesService, RolesService>();
 

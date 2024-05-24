@@ -34,9 +34,7 @@ public class RequiresPermissionAttribute(params string[] permissions)
         {
             using var dbContext = new DatabaseContext();
             var rolesService = new RolesService(dbContext);
-            var userRolePermissions = rolesService
-                .GetPermissions(roleId)
-                .Result;
+            var userRolePermissions = rolesService.GetPermissions(roleId).Result;
             var errors = 0;
 
             foreach (var permission in _permissions)

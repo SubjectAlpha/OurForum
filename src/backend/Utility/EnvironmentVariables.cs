@@ -17,6 +17,11 @@ public static class EnvironmentVariables
         "superSecretDevelopmentKeyValueDoNotTellAnyoneChangeThisInProduction"
     );
 
+    public static readonly string SQL_CONNECTOR = GetEnvironmentVariable(
+        nameof(SQL_CONNECTOR),
+        "MySQL"
+    );
+
     public static readonly string SQL_DATABASE = GetEnvironmentVariable(
         nameof(SQL_DATABASE),
         "OurForum"
@@ -27,14 +32,14 @@ public static class EnvironmentVariables
         "str0ngDevelopmentPassw0rd!"
     );
 
-    public static readonly string SQL_PORT = GetEnvironmentVariable(nameof(SQL_PORT), "1433");
+    public static readonly string SQL_PORT = GetEnvironmentVariable(nameof(SQL_PORT), "3306");
 
     public static readonly string SQL_SERVER = GetEnvironmentVariable(
         nameof(SQL_SERVER),
         "localhost"
     );
 
-    public static readonly string SQL_USER = GetEnvironmentVariable(nameof(SQL_USER), "sa");
+    public static readonly string SQL_USER = GetEnvironmentVariable(nameof(SQL_USER), "root");
 
     private static readonly string SQL_TRUST_CONNECTION = GetEnvironmentVariable(
         nameof(SQL_TRUST_CONNECTION),
@@ -43,7 +48,7 @@ public static class EnvironmentVariables
 
     public static readonly string SQL_CONNECTIONSTRING = GetEnvironmentVariable(
         nameof(SQL_CONNECTIONSTRING),
-        $"Server={SQL_SERVER},{SQL_PORT};Database={SQL_DATABASE};User Id={SQL_USER};Password={SQL_PASSWORD};Trusted_Connection={SQL_TRUST_CONNECTION};TrustServerCertificate=True"
+        $"Server={SQL_SERVER};Port={SQL_PORT};Database={SQL_DATABASE};User Id={SQL_USER};Password={SQL_PASSWORD};"
     );
 
     private static readonly string[] separator = ["\n", "\r", ";"];

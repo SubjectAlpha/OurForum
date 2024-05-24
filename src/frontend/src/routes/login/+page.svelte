@@ -1,25 +1,38 @@
 <script>
-	// on validation failed
+    import { PUBLIC_BACKEND_URL } from "$env/static/public";
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
 
-	let email = "";
+    let email = "";
     let password = "";
-
-    let emailRegex = new RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$");
-    let passwordRegex = new RegExp("^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$");
 
     $: emailValid = true;
     $: passwordValid = true;
 
-    async function submitForm(){
+    async function submitForm(e){
+        e.preventDefault();
         emailValid = emailRegex.test(email);
         passwordValid = passwordRegex.test(password);
+
+        if(emailValid && passwordValid)
+        {
+            console.log(`${PUBLIC_BACKEND_URL}/user/authenticate`);
+            const res = await fetch(`${PUBLIC_BACKEND_URL}/user/authenticate`, {
+                method: "POST",
+                body: {
+                    "email": email,
+                    "password": password
+                }
+            });
+            console.log(res);
+        }
     }
 </script>
 
 <div class="p-12 pt-0 grid h-screen place-items-center">
 	<form
 		class="bg-white dark:bg-slate-600 shadow-md rounded p-8 mb-4 lg:w-1/3 md:w-1/3 sm:w-full"
-		on:submit|preventDefault={submitForm}
+		on:submit={submitForm}
 	>
 		<div class="mb-4">
 			<label class="block text-gray-700 dark:text-white text-sm font-bold mb-2" for="email">

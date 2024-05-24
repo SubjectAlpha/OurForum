@@ -11,8 +11,19 @@ public class DatabaseContext : DbContext
     public DbSet<Role> Roles { get; set; }
     public DbSet<User> Users { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
-        optionsBuilder.UseSqlServer(EnvironmentVariables.SQL_CONNECTIONSTRING);
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        switch (EnvironmentVariables.SQL_CONNECTOR.ToLowerInvariant())
+        {
+            case "mssql":
+                optionsBuilder.UseSqlServer(EnvironmentVariables.SQL_CONNECTIONSTRING);
+                break;
+            case "mysql":
+            default:
+                optionsBuilder.UseMySQL(EnvironmentVariables.SQL_CONNECTIONSTRING);
+                break;
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) =>
         modelBuilder.ApplySoftDeleteQueryFilter();
