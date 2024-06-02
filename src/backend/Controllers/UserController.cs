@@ -31,6 +31,7 @@ public class UserController(
     [AllowAnonymous]
     public async Task<IActionResult> Authenticate([FromBody] LoginRequest body)
     {
+        Console.WriteLine("HITS!");
         var validationResult = LoginRequestValidation(body);
         if (validationResult.Errors.Count > 0)
         {

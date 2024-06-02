@@ -1,30 +1,30 @@
 <script>
+// @ts-nocheck
+
     import { PUBLIC_BACKEND_URL } from "$env/static/public";
+    import { post } from "$lib/request";
     const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
 
-    let email = "";
-    let password = "";
+    let email = "admin@email.com";
+    let password = "str0ngDevelopmentPassw0rd!";
 
     $: emailValid = true;
     $: passwordValid = true;
 
     async function submitForm(e){
-        e.preventDefault();
         emailValid = emailRegex.test(email);
         passwordValid = passwordRegex.test(password);
 
         if(emailValid && passwordValid)
         {
             console.log(`${PUBLIC_BACKEND_URL}/user/authenticate`);
-            const res = await fetch(`${PUBLIC_BACKEND_URL}/user/authenticate`, {
-                method: "POST",
-                body: {
+            post(`${PUBLIC_BACKEND_URL}/user/authenticate`, {
                     "email": email,
                     "password": password
-                }
-            });
-            console.log(res);
+                }).then(r => {
+                    console.log(r.json())
+                });
         }
     }
 </script>
