@@ -11,6 +11,7 @@ class OurForum
 {
     public static async Task Main(string[] args)
     {
+        const string customCorsPolicy = "OurForumCorsPolicy";
         var envLoaded = EnvironmentVariables.Load(".env"); // TODO: accept args here
         if (envLoaded.Errors.Count == 0)
         {
@@ -53,6 +54,17 @@ class OurForum
         builder.Services.AddAuthorization();
 
         builder.Services.AddAntiforgery();
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(
+                customCorsPolicy,
+                policy =>
+                {
+                    policy.AllowAnyHeader();
+                    policy.WithOrigins(["http://localhost:5173"]);
+                }
+            );
+        });
         builder.Services.AddDbContext<DatabaseContext>();
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IRolesService, RolesService>();
@@ -73,6 +85,7 @@ class OurForum
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseAntiforgery();
+        app.UseCors(customCorsPolicy);
 
         app.MapControllerRoute(name: "default", pattern: "{controller=User}/{action=Get}/{id?}");
 

@@ -20,11 +20,11 @@
         {
             console.log(`${PUBLIC_BACKEND_URL}/user/authenticate`);
             post(`${PUBLIC_BACKEND_URL}/user/authenticate`, {
-                    "email": email,
-                    "password": password
-                }).then(r => {
-                    console.log(r.json())
-                });
+                "email": email,
+                "password": password
+            }).then(async r => {
+                console.log(await r.text())
+            });
         }
     }
 </script>

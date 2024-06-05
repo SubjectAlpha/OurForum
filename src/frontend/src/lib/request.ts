@@ -3,9 +3,9 @@ export default null;
 export async function post(url: string, body: object) {
     return await fetch(url, {
         method: "POST",
-        mode: "no-cors",
+        mode: "cors",
         cache: "no-cache",
-        referrerPolicy: "no-referrer",
+        referrerPolicy: "same-origin",
         headers: {
             "Content-Type": "application/json",
         },
@@ -14,5 +14,5 @@ export async function post(url: string, body: object) {
 }
 
 export async function get(url: string) {
-    return fetch(url, { method: "GET" });
+    return await fetch(url, { method: "GET" });
 }
