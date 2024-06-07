@@ -1,8 +1,9 @@
 <script>
 // @ts-nocheck
 
-    import { PUBLIC_BACKEND_URL } from "$env/static/public";
-    import { post } from "$lib/request";
+    import { login } from "../../hooks/auth";
+	import Input from "../../components/form/input.svelte";
+
     const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
 
@@ -18,13 +19,7 @@
 
         if(emailValid && passwordValid)
         {
-            console.log(`${PUBLIC_BACKEND_URL}/user/authenticate`);
-            post(`${PUBLIC_BACKEND_URL}/user/authenticate`, {
-                "email": email,
-                "password": password
-            }).then(async r => {
-                console.log(await r.text())
-            });
+            login(email, password);
         }
     }
 </script>
@@ -35,36 +30,26 @@
 		on:submit={submitForm}
 	>
 		<div class="mb-4">
-			<label class="block text-gray-700 dark:text-white text-sm font-bold mb-2" for="email">
-                Email Address
-            </label>
-
-            <input
+            <Input
+                id="emailInput"
                 bind:value={email}
-                class:border-red-500={!emailValid}
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="email"
+                labelText="Email Address"
                 placeholder="john.smith@email.com"
+                errorText="Please enter an email."
+                validation={emailRegex}
             />
-			<p class:hidden={emailValid} class="text-red-500 text-xs italic hidden">
-				Please enter an email.
-			</p>
 		</div>
 		<div class="mb-6">
-            <label class="block text-gray-700 dark:text-white text-sm font-bold mb-2" for="password">
-                Password
-            </label>
-
-            <input
+            <Input
+                id="passwordInput"
                 bind:value={password}
-                class:border-red-500={!passwordValid}
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="password"
-                placeholder={"******************"}
+                labelText="Password"
+                placeholder="={"******************"}"
+                errorText="Please enter a password."
+                validation={passwordRegex}
             />
-			<p class:hidden={passwordValid} class="text-red-500 text-xs italic hidden">
-				Please enter a password.
-			</p>
 		</div>
 		<div class="flex items-center justify-between">
 			<button
@@ -75,7 +60,7 @@
 			</button>
 			<a
 				class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-				href="#"
+				href="any"
 			>
 				Forgot Password?
 			</a>
