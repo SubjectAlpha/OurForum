@@ -1,5 +1,11 @@
 <script>
-	export let title;
+	import { token } from "../hooks/auth";
+
+    export let title;
+
+    $: token;
+
+    console.log("token", $token);
 </script>
 
 <nav class="bg-gray-800">
@@ -116,12 +122,12 @@
                     <button
                         on:click={
                             (e) => {
-                                document.getElementById("profile-dropdown").classList.toggle("hidden");
+                                document.getElementById("profile-dropdown")?.classList.toggle("hidden");
                             }
                         }
                         on:focusout={
                             e => {
-                                document.getElementById("profile-dropdown").classList.toggle("hidden");
+                                document.getElementById("profile-dropdown")?.classList.toggle("hidden");
                             }
                         }
                         type="button"

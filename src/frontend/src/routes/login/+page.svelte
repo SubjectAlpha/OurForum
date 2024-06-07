@@ -1,8 +1,9 @@
 <script>
 // @ts-nocheck
 
-    import { login } from "../../hooks/auth";
+    import { login, token } from "../../hooks/auth";
 	import Input from "../../components/form/input.svelte";
+	import { tokenName } from "$lib/constants";
 
     const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
@@ -12,6 +13,12 @@
 
     $: emailValid = true;
     $: passwordValid = true;
+    $: token;
+
+    if(($token) && window)
+    {
+        window.location.replace("/");
+    }
 
     async function submitForm(e){
         emailValid = emailRegex.test(email);
@@ -19,7 +26,11 @@
 
         if(emailValid && passwordValid)
         {
-            login(email, password);
+            login(email, password).then(r => {
+                if(r && localStorage){
+                    localStorage.setItem(tokenName, r);
+                }
+            }).catch(ex => console.log(ex));
         }
     }
 </script>

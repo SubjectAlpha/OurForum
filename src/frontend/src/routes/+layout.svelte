@@ -3,7 +3,7 @@
     import Navbar from "../components/navbar.svelte";
 
     const title = import.meta.env.VITE_TITLE;
-    console.log(title);
+    console.log("title", title);
     $: title;
 </script>
 
