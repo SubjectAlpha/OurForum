@@ -7,9 +7,9 @@
     $: title;
 </script>
 
-<div class="bg-white dark:bg-slate-800 h-screen overflow-y-hidden overflow-x-hidden">
+<div class="bg-white dark:bg-slate-800 dark:text-white h-screen overflow-y-hidden overflow-x-hidden">
     <Navbar title={title} />
-    <slot />
+    <main class="bg-gray-200 dark:bg-slate-600 m-4 p-1 h-full rounded">
+        <slot />
+    </main>
 </div>
-
-

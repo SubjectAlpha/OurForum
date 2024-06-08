@@ -1,5 +1,7 @@
-<script>
+<script lang="ts">
 	import { token } from "../hooks/auth";
+	import Navlink from "./navbar/navlink.svelte";
+	import ProfileOptionLink from "./navbar/profileOptionLink.svelte";
 
     export let title;
 
@@ -8,7 +10,7 @@
     console.log("token", $token);
 </script>
 
-<nav class="bg-gray-800">
+<nav class="dark:bg-gray-900">
 	<div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
 		<div class="relative flex h-16 items-center justify-between">
 			<div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -59,35 +61,15 @@
 			</div>
 			<div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
 				<div class="flex flex-shrink-0 items-center">
-					<img
-						class="h-8 w-auto"
-						src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-						alt={title}
-					/>
+					<a class="hover:dark:bg-gray-700 rounded-md px-3 py-2" href="/">{title}</a>
 				</div>
 				<div class="hidden sm:ml-6 sm:block">
 					<div class="flex space-x-4">
 						<!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-						<a
-							href="#"
-							class="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
-							aria-current="page">Dashboard</a
-						>
-						<a
-							href="#"
-							class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-							>Team</a
-						>
-						<a
-							href="#"
-							class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-							>Projects</a
-						>
-						<a
-							href="#"
-							class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-							>Calendar</a
-						>
+						<Navlink href="/" text="Dashbaord" isSelected={true}/>
+						<Navlink href="/" text="Team" isSelected={false}/>
+						<Navlink href="/" text="Projects" isSelected={false}/>
+						<Navlink href="/" text="Calendar" isSelected={false}/>
 					</div>
 				</div>
 			</div>
@@ -164,29 +146,16 @@
 						aria-labelledby="user-menu-button"
 						tabindex="-1"
 					>
+                    {#if $token}
 						<!-- Active: "bg-gray-100", Not Active: "" -->
-						<a
-							href="#"
-							class="block px-4 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-200"
-							role="menuitem"
-							tabindex="-1"
-							id="user-menu-item-0">Your Profile</a
-						>
-						<a
-							href="#"
-							class="block px-4 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-200"
-							role="menuitem"
-							tabindex="-1"
-							id="user-menu-item-1">Settings</a
-						>
-						<a
-							href="#"
-							class="block px-4 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-200"
-							role="menuitem"
-							tabindex="-1"
-							id="user-menu-item-2">Sign out</a
-						>
-					</div>
+                        <ProfileOptionLink href="/" id="user-menu-item-0" text="Your Profile" />
+                        <ProfileOptionLink href="/" id="user-menu-item-1" text="Settings" />
+                        <ProfileOptionLink href="/" id="user-menu-item-2" text="Sign out" />
+
+                    {:else}
+                        <ProfileOptionLink href="/login" id="user-menu-item-0" text="Sign In" />
+                    {/if}
+                    </div>
 				</div>
 			</div>
 		</div>

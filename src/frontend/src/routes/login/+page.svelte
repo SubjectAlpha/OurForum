@@ -1,12 +1,8 @@
-<script>
-// @ts-nocheck
+<script lang="ts">
 
     import { login, token } from "../../hooks/auth";
 	import Input from "../../components/form/input.svelte";
-	import { tokenName } from "$lib/constants";
-
-    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
+	import { TOKEN_NAME, EMAIL_REGEX, PASSWORD_REGEX } from "$lib/constants";
 
     let email = "admin@email.com";
     let password = "str0ngDevelopmentPassw0rd!";
@@ -15,22 +11,24 @@
     $: passwordValid = true;
     $: token;
 
-    if(($token) && window)
+    if($token && window)
     {
         window.location.replace("/");
     }
 
-    async function submitForm(e){
-        emailValid = emailRegex.test(email);
-        passwordValid = passwordRegex.test(password);
+    async function submitForm(){
+        emailValid = EMAIL_REGEX.test(email);
+        passwordValid = PASSWORD_REGEX.test(password);
 
         if(emailValid && passwordValid)
         {
             login(email, password).then(r => {
                 if(r && localStorage){
-                    localStorage.setItem(tokenName, r);
+                    localStorage.setItem(TOKEN_NAME, r);
+                    window.location.replace("/");
                 }
-            }).catch(ex => console.log(ex));
+            })
+            .catch(ex => console.log(ex));
         }
     }
 </script>
@@ -48,7 +46,7 @@
                 labelText="Email Address"
                 placeholder="john.smith@email.com"
                 errorText="Please enter an email."
-                validation={emailRegex}
+                validation={EMAIL_REGEX}
             />
 		</div>
 		<div class="mb-6">
@@ -57,9 +55,9 @@
                 bind:value={password}
                 type="password"
                 labelText="Password"
-                placeholder="={"******************"}"
+                placeholder= {"******************"}
                 errorText="Please enter a password."
-                validation={passwordRegex}
+                validation={PASSWORD_REGEX}
             />
 		</div>
 		<div class="flex items-center justify-between">
