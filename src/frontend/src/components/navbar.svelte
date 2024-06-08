@@ -66,10 +66,10 @@
 				<div class="hidden sm:ml-6 sm:block">
 					<div class="flex space-x-4">
 						<!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-						<Navlink href="/" text="Dashbaord" isSelected={true}/>
-						<Navlink href="/" text="Team" isSelected={false}/>
-						<Navlink href="/" text="Projects" isSelected={false}/>
-						<Navlink href="/" text="Calendar" isSelected={false}/>
+						<Navlink href="/" text="Dashboard" isSelected={true}/>
+						<Navlink href="/s" text="Team" isSelected={false}/>
+						<Navlink href="/d" text="Projects" isSelected={false}/>
+						<Navlink href="/f" text="Calendar" isSelected={false}/>
 					</div>
 				</div>
 			</div>
@@ -148,9 +148,9 @@
 					>
                     {#if $token}
 						<!-- Active: "bg-gray-100", Not Active: "" -->
-                        <ProfileOptionLink href="/" id="user-menu-item-0" text="Your Profile" />
-                        <ProfileOptionLink href="/" id="user-menu-item-1" text="Settings" />
-                        <ProfileOptionLink href="/" id="user-menu-item-2" text="Sign out" />
+                        <ProfileOptionLink href="/s" id="user-menu-item-0" text="Your Profile" />
+                        <ProfileOptionLink href="/d" id="user-menu-item-1" text="Settings" />
+                        <ProfileOptionLink href="/logout" id="user-menu-item-2" text="Sign out" />
 
                     {:else}
                         <ProfileOptionLink href="/login" id="user-menu-item-0" text="Sign In" />

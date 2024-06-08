@@ -1,8 +1,12 @@
 <script lang="ts">
-	import { token } from "../../../hooks/auth";
-    export let data: string;
+	import { token } from "../../../../hooks/auth";
 
-    console.log(data);
+    $: token;
+    if(($token || $token.length == 0) && window)
+    {
+        console.log(window.location.href);
+    }
+
 
     $: token;
 </script>
