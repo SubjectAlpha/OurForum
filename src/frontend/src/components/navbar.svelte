@@ -16,6 +16,7 @@
         <img src={NoIcon} class="me-3 h-6 sm:h-9" alt="Flowbite Logo" />
         <span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">{title}</span>
     </NavBrand>
+    {#if $token}
     <div class="flex items-center md:order-2">
         <Avatar id="avatar-menu" src={NoIcon} />
         <NavHamburger class1="w-full md:flex md:w-auto md:order-1" />
@@ -26,12 +27,26 @@
             <span class="block text-sm">Bonnie Green</span>
             <span class="block truncate text-sm font-medium">name@flowbite.com</span>
         </DropdownHeader>
-        <DropdownItem>Dashboard</DropdownItem>
+        <DropdownItem href="/">Dashboard</DropdownItem>
         <DropdownItem>Settings</DropdownItem>
         <DropdownItem>Earnings</DropdownItem>
         <DropdownDivider />
-        <DropdownItem href="/signout">Sign out</DropdownItem>
+        <DropdownItem href="/logout">Sign out</DropdownItem>
     </Dropdown>
+    {:else}
+    <div class="flex items-center md:order-2">
+        <Avatar id="avatar-menu" src={NoIcon} />
+        <NavHamburger class1="w-full md:flex md:w-auto md:order-1" />
+        <DarkMode class="ml-2" />
+    </div>
+    <Dropdown placement="bottom" triggeredBy="#avatar-menu">
+        <DropdownHeader>
+            <span class="block text-sm">Guest</span>
+        </DropdownHeader>
+        <DropdownItem href="/register">Register</DropdownItem>
+        <DropdownItem href="/login">Sign in</DropdownItem>
+    </Dropdown>
+    {/if}
     <NavUl>
         <NavLi href="/" active={true}>Home</NavLi>
         <NavLi href="/about">About</NavLi>
