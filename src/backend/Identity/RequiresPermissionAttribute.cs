@@ -19,10 +19,10 @@ public class RequiresPermissionAttribute(params string[] permissions)
     public void OnAuthorization(AuthorizationFilterContext context)
     {
         var roleIdClaim = context.HttpContext.User.Claims.FirstOrDefault(x =>
-            x.Type == CustomClaims.ROLE_ID
+            x.Type == CustomClaims.RoleId
         );
         var userIdClaim = context.HttpContext.User.Claims.FirstOrDefault(x =>
-            x.Type == CustomClaims.USER_ID
+            x.Type == CustomClaims.UserId
         );
 
         var roleId = Guid.Empty;

@@ -35,7 +35,7 @@
 
 <div class="p-12 pt-0 grid h-screen place-items-center">
 	<form
-		class="bg-white dark:bg-slate-600 shadow-md rounded p-8 mb-4 lg:w-1/3 md:w-1/3 sm:w-full"
+		class="bg-white dark:bg-slate-800 shadow-md rounded p-8 mb-4 lg:w-1/3 md:w-1/3 sm:w-full"
 		on:submit={submitForm}
 	>
 		<div class="mb-4">

@@ -13,8 +13,10 @@ public struct Permissions
 
 public struct CustomClaims
 {
-    public const string USER_ID = "UserId",
-        ROLE_ID = "RoleId";
+    public const string UserId = "userId",
+        Username = "username",
+        RoleId = "roleId",
+        Permissions = "permissions";
 }
 
 public struct SystemRoles

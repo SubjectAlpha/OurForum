@@ -138,18 +138,11 @@ public class UserController(
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new(JwtRegisteredClaimNames.Sub, user.Email),
                 new(JwtRegisteredClaimNames.Email, user.Email),
-                new(CustomClaims.USER_ID, user.Id.ToString()),
-                new(CustomClaims.ROLE_ID, user.Role?.Id.ToString() ?? string.Empty),
+                new(CustomClaims.UserId, user.Id.ToString()),
+                new(CustomClaims.Username, user.Alias),
+                new(CustomClaims.RoleId, user.Role?.Id.ToString() ?? string.Empty),
+                new(CustomClaims.Permissions, user.Role?.Permissions!)
             };
-
-            foreach (var claim in user.Role?.Permissions.Split(";") ?? [])
-            {
-                var permissionProperties = typeof(Permissions).HasField(claim);
-                if (permissionProperties)
-                {
-                    claims.Add(new Claim(claim, claim));
-                }
-            }
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

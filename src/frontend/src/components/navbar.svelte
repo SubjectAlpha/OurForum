@@ -1,45 +1,54 @@
 <script lang="ts">
 	import { token } from "../hooks/auth";
+    import { jwtDecode, type JwtPayload } from "jwt-decode";
     import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, Avatar, Dropdown, DropdownItem, DropdownHeader, DropdownDivider, DarkMode } from 'flowbite-svelte'
     import NoIcon from "$lib/assets/no-icon.png";
 
     export let title;
 
+    let decodedToken: JwtPayload;
+    let username: string = "Guest";
+    let email: string = "john.doe@email.com"
+
     $: token;
 
-    console.log("token", $token);
-    ;
+    if($token)
+    {
+        decodedToken = jwtDecode($token);
+        username = decodedToken.username!;
+        email = decodedToken.email!;
+    }
 </script>
 
-<Navbar color="gray" class="dark:bg-gray-900">
+<Navbar color="gray" class="bg-gray-200 dark:bg-gray-900">
     <NavBrand href="/">
         <img src={NoIcon} class="me-3 h-6 sm:h-9" alt="Flowbite Logo" />
         <span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">{title}</span>
     </NavBrand>
     {#if $token}
-    <div class="flex items-center md:order-2">
+    <div class="flex items-center md:order-2 hover:cursor-pointer">
         <Avatar id="avatar-menu" src={NoIcon} />
         <NavHamburger class1="w-full md:flex md:w-auto md:order-1" />
         <DarkMode class="ml-2" />
     </div>
-    <Dropdown placement="bottom" triggeredBy="#avatar-menu">
+    <Dropdown class="hover:cursor-pointer" placement="bottom" triggeredBy="#avatar-menu">
         <DropdownHeader>
-            <span class="block text-sm">Bonnie Green</span>
-            <span class="block truncate text-sm font-medium">name@flowbite.com</span>
+            <span class="block text-sm">{username}</span>
+            <sub class="block truncate text-xs">{email}</sub>
         </DropdownHeader>
-        <DropdownItem href="/">Dashboard</DropdownItem>
+        <DropdownItem href="/manage">Dashboard</DropdownItem>
         <DropdownItem>Settings</DropdownItem>
         <DropdownItem>Earnings</DropdownItem>
         <DropdownDivider />
         <DropdownItem href="/logout">Sign out</DropdownItem>
     </Dropdown>
     {:else}
-    <div class="flex items-center md:order-2">
+    <div class="flex items-center md:order-2 hover:cursor-pointer">
         <Avatar id="avatar-menu" src={NoIcon} />
         <NavHamburger class1="w-full md:flex md:w-auto md:order-1" />
         <DarkMode class="ml-2" />
     </div>
-    <Dropdown placement="bottom" triggeredBy="#avatar-menu">
+    <Dropdown class="hover:cursor-pointer" placement="bottom" triggeredBy="#avatar-menu">
         <DropdownHeader>
             <span class="block text-sm">Guest</span>
         </DropdownHeader>

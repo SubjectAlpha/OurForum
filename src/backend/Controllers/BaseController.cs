@@ -14,7 +14,7 @@ namespace OurForum.Backend.Controllers
         internal async Task<User?> GetCurrentUser()
         {
             var currentUserId = HttpContext.User.Claims.FirstOrDefault(x =>
-                x.Type == CustomClaims.USER_ID
+                x.Type == CustomClaims.UserId
             );
             if ((currentUserId is not null) && (userService is not null))
             {
