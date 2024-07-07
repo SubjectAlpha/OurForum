@@ -1,9 +1,16 @@
-﻿namespace OurForum.Backend.Entities
+﻿namespace OurForum.Backend.Entities;
+
+public class Board : Base
 {
-    public class Board : Base
+    public string Name { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public int Visibility { get; set; } = (int)VisibilitySetting.Hidden;
+    public virtual ICollection<Post>? Posts { get; set; }
+
+    public enum VisibilitySetting
     {
-        public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public virtual ICollection<Post>? Posts { get; set; }
+        Hidden,
+        Private,
+        Public
     }
 }

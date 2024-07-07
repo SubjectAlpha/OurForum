@@ -35,19 +35,14 @@ public class RequiresPermissionAttribute(params string[] permissions)
             using var dbContext = new DatabaseContext();
             var rolesService = new RolesService(dbContext);
             var userRolePermissions = rolesService.GetPermissions(roleId).Result;
-            var errors = 0;
 
             foreach (var permission in _permissions)
             {
                 if (userRolePermissions == null || !userRolePermissions.Contains(permission))
                 {
-                    errors++;
+                    context.Result = new ForbidResult();
+                    break;
                 }
-            }
-
-            if (errors >= _permissions.Length)
-            {
-                context.Result = new ForbidResult();
             }
         }
         else

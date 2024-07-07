@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using OurForum.Backend.Entities;
-using OurForum.Backend.Extensions;
 using OurForum.Backend.Identity;
 using OurForum.Backend.Services;
 using OurForum.Backend.Utility;
@@ -21,7 +20,7 @@ public class UserController(
     IUserService userService,
     IRolesService rolesService,
     ILogger<UserController> logger
-) : BaseController<UserController>(userService, rolesService, logger)
+) : BaseController<UserController>(userService, logger)
 {
     private readonly IRolesService _rolesService = rolesService;
     private readonly IUserService _userService = userService;
