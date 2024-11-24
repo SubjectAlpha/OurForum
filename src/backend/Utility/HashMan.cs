@@ -30,20 +30,19 @@ public static class HashMan
     /// <summary>
     /// Holds all possible Hash Versions
     /// </summary>
-    private static readonly Dictionary<short, HashVersion> _versions =
-        new()
+    private static readonly Dictionary<short, HashVersion> _versions = new()
+    {
         {
+            1,
+            new HashVersion
             {
-                1,
-                new HashVersion
-                {
-                    Version = 1,
-                    KeyDerivation = KeyDerivationPrf.HMACSHA512,
-                    HashSize = 256 / 8,
-                    SaltSize = 128 / 8
-                }
+                Version = 1,
+                KeyDerivation = KeyDerivationPrf.HMACSHA512,
+                HashSize = 256 / 8,
+                SaltSize = 128 / 8,
             }
-        };
+        },
+    };
 
     /// <summary>
     /// The default Hash Version, which should be used, if a new Hash is Created

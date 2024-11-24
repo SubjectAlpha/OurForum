@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OurForum.Backend.Entities;
 using OurForum.Backend.Identity;
 using OurForum.Backend.Services;
-using System.Text.Json.Serialization;
 
 namespace OurForum.Backend.Controllers;
 
@@ -27,7 +27,6 @@ public class BoardController(
         return Ok();
     }
 }
-
 
 public class CreateBoard
 {

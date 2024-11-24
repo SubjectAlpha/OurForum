@@ -140,7 +140,7 @@ public class UserController(
                 new(CustomClaims.UserId, user.Id.ToString()),
                 new(CustomClaims.Username, user.Alias),
                 new(CustomClaims.RoleId, user.Role?.Id.ToString() ?? string.Empty),
-                new(CustomClaims.Permissions, user.Role?.Permissions!)
+                new(CustomClaims.Permissions, user.Role?.Permissions!),
             };
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -152,7 +152,7 @@ public class UserController(
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature
-                )
+                ),
             };
 
             return tokenHandler.CreateEncodedJwt(tokenDescriptor);

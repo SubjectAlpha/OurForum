@@ -48,7 +48,7 @@ class OurForum
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true
+                    ValidateIssuerSigningKey = true,
                 };
             });
         builder.Services.AddAuthorization();

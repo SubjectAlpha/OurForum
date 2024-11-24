@@ -11,6 +11,6 @@ public class Board : Base
     {
         Hidden,
         Private,
-        Public
+        Public,
     }
 }

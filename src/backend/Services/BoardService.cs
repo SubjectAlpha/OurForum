@@ -3,13 +3,12 @@ using OurForum.Backend.Utility;
 
 namespace OurForum.Backend.Services;
 
-public interface IBoardService 
+public interface IBoardService
 {
-
     public IEnumerable<Board> GetPublic();
 }
 
-public class BoardService(DatabaseContext context) : IBoardService 
+public class BoardService(DatabaseContext context) : IBoardService
 {
     private readonly DatabaseContext _context = context;
 

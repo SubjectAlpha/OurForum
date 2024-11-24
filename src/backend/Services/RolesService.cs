@@ -34,7 +34,7 @@ public class RolesService(DatabaseContext context) : IRolesService
         {
             Name = name,
             Permissions = permissions,
-            PowerLevel = powerLevel
+            PowerLevel = powerLevel,
         };
         _context.Roles.Add(r);
         _context.SaveChanges();

@@ -28,7 +28,7 @@ public class UserService(DatabaseContext context) : IUserService
             Alias = alias,
             Email = email,
             HashedPassword = hashedPassword,
-            Role = role
+            Role = role,
         };
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
