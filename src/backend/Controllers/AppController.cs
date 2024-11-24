@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using OurForum.Backend.Identity;
 using OurForum.Backend.Services;
