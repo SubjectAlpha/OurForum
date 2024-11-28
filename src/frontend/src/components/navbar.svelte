@@ -21,15 +21,18 @@
 </script>
 
 <Navbar color="gray" class="bg-gray-200 dark:bg-gray-900">
-    <NavBrand href="/">
+    <NavBrand href="/" class="p-2">
         <img src={NoIcon} class="me-3 h-6 sm:h-9" alt="Flowbite Logo" />
         <span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">{title}</span>
     </NavBrand>
     {#if $token}
     <div class="flex items-center md:order-2 hover:cursor-pointer">
-        <Avatar id="avatar-menu" src={NoIcon} />
         <NavHamburger class1="w-full md:flex md:w-auto md:order-1" />
-        <DarkMode class="ml-2" />
+        <div class="hover:dark:bg-gray-700 hover:bg-gray-100 rounded p-2">
+            <Avatar id="avatar-menu" src={NoIcon} />
+        </div>
+
+        <DarkMode class="ml-1 p-5" />
     </div>
     <Dropdown class="hover:cursor-pointer" placement="bottom" triggeredBy="#avatar-menu">
         <DropdownHeader>
@@ -44,8 +47,10 @@
     </Dropdown>
     {:else}
     <div class="flex items-center md:order-2 hover:cursor-pointer">
-        <Avatar id="avatar-menu" src={NoIcon} />
-        <NavHamburger class1="w-full md:flex md:w-auto md:order-1" />
+        <NavHamburger class="w-full md:flex md:w-auto md:order-1" />
+        <div class="hover:bg-gray-700 rounded p-2">
+            <Avatar id="avatar-menu" src={NoIcon} />
+        </div>
         <DarkMode class="ml-2" />
     </div>
     <Dropdown class="hover:cursor-pointer" placement="bottom" triggeredBy="#avatar-menu">
